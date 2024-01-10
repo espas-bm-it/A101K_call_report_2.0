@@ -13,14 +13,13 @@ return new class extends Migration
     {
         Schema::create('xml_data', function (Blueprint $table) {
             $table->id();
-            $table->string('SubscriberName');
-            $table->string('DialledNumber');
-            $table->date('Date');
-            $table->time('Time');
-            $table->time('RingingDuration');
-            $table->time('CallDuration');
-            $table->string('Type');
-            $table->string('CallType');
+            $table->string('SubscriberName')->nullable();
+            $table->string('DialledNumber')->nullable();
+            $table->date('Date')->nullable();
+            $table->time('Time')->nullable();
+            $table->time('RingingDuration')->nullable();
+            $table->time('CallDuration')->nullable();
+            $table->string('CommunicationType')->nullable();
         });
     }
 

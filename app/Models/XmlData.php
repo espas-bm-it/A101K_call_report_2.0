@@ -10,4 +10,6 @@ class XmlData extends Model
     use HasFactory;
 
     public $timestamps = false;
+    
+    protected $fillable = ['SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CommunicationType'];
 }
