@@ -11,5 +11,5 @@ class XmlData extends Model
 
     public $timestamps = false;
     
-    protected $fillable = ['SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CommunicationType'];
+    protected $fillable = ['SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CallStatus', 'CommunicationType'];
 }

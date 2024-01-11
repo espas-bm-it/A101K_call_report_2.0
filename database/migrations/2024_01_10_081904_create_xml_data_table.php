@@ -19,6 +19,7 @@ return new class extends Migration
             $table->time('Time')->nullable();
             $table->time('RingingDuration')->nullable();
             $table->time('CallDuration')->nullable();
+            $table->string('CallStatus')->nullable();
             $table->string('CommunicationType')->nullable();
         });
     }
