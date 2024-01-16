@@ -20,6 +20,10 @@
         </div>
     </div>
 </div>
+<!--  Data output here in paginated form  -->
+@foreach($XmlDatas as $XmlData)
+<p>{{$XmlData->SubscriberName}}</p>
+@endforeach
+{{ $XmlDatas->links() }}
 
-<!--    Display Calls HERE  -->
 @endsection
