@@ -17,8 +17,9 @@ use App\Http\Controllers\ReadXmlController;
 
 Route::get('/',[DashboardController::class, 'dash']);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
 Route::get("read-xml", [ReadXmlController::class, "index"]);
+
+
 Auth::routes();
 
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

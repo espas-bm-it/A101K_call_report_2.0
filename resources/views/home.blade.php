@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layouts.app')
 
 @section('content')
 <div class="container">
@@ -20,6 +20,7 @@
         </div>
     </div>
 </div>
+
 <!--  Data output here in paginated form  -->
 @foreach($XmlDatas as $XmlData)
 <p>{{$XmlData->SubscriberName}}</p>
