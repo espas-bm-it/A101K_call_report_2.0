@@ -24,6 +24,10 @@
 @foreach($XmlDatas as $XmlData)
 <p>{{$XmlData->SubscriberName}}</p>
 @endforeach
+
+<!-- Pagination HTML Markup -->
+<div>
 {{ $XmlDatas->links() }}
+</div>
 
 @endsection
