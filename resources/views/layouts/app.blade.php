@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>ESPAS - Call Report</title>
+    <title>Call Report - ESPAS</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -36,7 +36,7 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
                         <a class="navbar-brand" href="{{ url('/home') }}">
-                            <img src="{{ asset('img/espas_logo.svg') }}" alt="ESPAS Logo">
+                            <img src="{{ asset('img/espas_logo.svg') }}" alt="ESPAS Logo" width="120" height="54">
                         </a>
                     </ul>
 
