@@ -16,6 +16,6 @@ class XmlData extends Model
     
     protected $fillable = ['SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CallStatus', 'CommunicationType'];
 
-    protected $sortable = ['Date','Zeit', 'CallStatus', 'RingingDuration', 'CallDuration'];
+    protected $sortable = ['Date','Zeit', 'RingingDuration', 'CallDuration', 'CallStatus', 'CommunicationType'];
 
 }
