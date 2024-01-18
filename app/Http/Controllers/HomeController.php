@@ -27,7 +27,7 @@ class HomeController extends Controller
     public function index()
     {
         return view('home', [
-            'XmlDatas' => XmlData::query()->paginate(10)
+            'XmlDatas' => XmlData::orderByDesc('Date')->orderByDesc('Time')->paginate(10)
         ]);
     }
 }
