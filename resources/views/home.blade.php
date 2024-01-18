@@ -7,14 +7,14 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Costumer</th>
+                            <th scope="col">SubscriberName</th>
                             <th scope="col">Nummer</th>
-                            <th scope="col">Datum</th>
-                            <th scope="col">Zeit</th>
-                            <th scope="col">Ringing</th>
-                            <th scope="col">Duration</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Type</th>
+                            <th scope="col">@sortablelink('Date', 'Datum')</th>
+                            <th scope="col">@sortablelink('Time','Zeit')</th>
+                            <th scope="col">@sortablelink('RingingDuration','Ringing')</th>
+                            <th scope="col">@sortablelink('CallDuration','Duration')</th>
+                            <th scope="col">@sortablelink('CallStatus','Status')</th>
+                            <th scope="col">@sortablelink('CommunicationType','Type')</th>
                         </tr>
                     </thead>
                     <tbody>
