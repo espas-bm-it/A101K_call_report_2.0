@@ -30,7 +30,9 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
-
+                        <a class="navbar-brand" href="{{ url('/home') }}">
+                            <img src="{{ asset('img/espas_logo.svg') }}" alt="ESPAS Logo" width="120" height="54">
+                        </a>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
