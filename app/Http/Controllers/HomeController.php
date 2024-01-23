@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\XmlData;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -22,6 +21,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
+
 
     // index function returns the view home and gives with it a paginated query of all objects in the database
 
