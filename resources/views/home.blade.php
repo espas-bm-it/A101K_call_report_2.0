@@ -7,8 +7,8 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">SubscriberName</th>
-                            <th scope="col">Nummer</th>
+                            <th scope="col">Kund</th>
+                            <th scope="col">Telefon Nummer</th>
                             <th scope="col">@sortablelink('Date', 'Datum')</th>
                             <th scope="col">@sortablelink('Time','Zeit')</th>
                             <th scope="col">@sortablelink('RingingDuration','Ringing')</th>
