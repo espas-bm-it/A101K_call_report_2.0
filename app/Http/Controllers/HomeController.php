@@ -24,6 +24,7 @@ class HomeController extends Controller
      */
 
      // index function returns the view home and gives with it a paginated query of all objects in the database
+
      public function index(Request $request)
      {
          $sortableColumns = ['SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CallStatus', 'CommunicationType'];
@@ -32,4 +33,4 @@ class HomeController extends Controller
  
          return view('home', compact('XmlDatas'));
      }
-}
+
