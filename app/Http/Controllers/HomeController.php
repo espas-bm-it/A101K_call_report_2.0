@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\XmlData;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -30,7 +31,23 @@ class HomeController extends Controller
     {
         $sortableColumns = ['SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CallStatus', 'CommunicationType'];
 
-        $XmlDatas = XmlData::sortable($sortableColumns)->orderBy('Date', 'desc')->orderBy('Time', 'desc')->paginate(10);
+        $latestCall = XmlData::latest('Date')->first();
+
+        if ($latestCall) {
+            $endDate = Carbon::parse($latestCall->Date);
+            $startDate = $endDate->copy()->subDays(5)->startOfDay();
+        } else {
+            // Fallback, wenn keine Anrufe vorhanden sind
+            $startDate = Carbon::now()->subDays(5)->startOfDay();
+            $endDate = Carbon::now();
+        }
+
+        $XmlDatas = XmlData::whereBetween('Date', [$startDate, $endDate])
+            ->whereNotIn('CommunicationType', ['BreakIn', 'FacilityRequest'])
+            ->sortable($sortableColumns)
+            ->orderBy('Date', 'desc')
+            ->orderBy('Time', 'desc')
+            ->paginate(10);
 
         return view('home', compact('XmlDatas'));
     }

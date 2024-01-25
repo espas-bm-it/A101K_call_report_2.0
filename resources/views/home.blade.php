@@ -23,8 +23,8 @@
                             <tr>
                                 <!--  Data output here in paginated form  -->
                                 <td>{{ $XmlData->SubscriberName }}</td>
-                                <td>{{ $XmlData->DialledNumber }}</td>
-                                <td>{{ $XmlData->Date }}</td>
+                                <td>{{ $XmlData->formattedPhoneNumber }}</td> <!-- siehe XmlData.php -->
+                                <td>{{ \Carbon\Carbon::parse($XmlData->Date)->format('d.m.Y') }}</td> <!-- siehe HomeController.php -->
                                 <td>{{ $XmlData->Time }}</td>
                                 <td>{{ $XmlData->RingingDuration }}</td>
                                 <td>{{ $XmlData->CallDuration }}</td>
