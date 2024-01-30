@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\XmlData;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Seblhaire\DateRangePickerHelper\DateRangePickerHelper;
 use Kyslik\ColumnSortable\Sortable;
+
 
 class HomeController extends Controller
 {
@@ -46,14 +48,28 @@ class HomeController extends Controller
             $endDate = Carbon::now();
         }
 
+
         $XmlDatas = XmlData::sortable($sortableColumns)->select('SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CallStatus', 'CommunicationType')
             
+
             ->whereNotIn('CommunicationType', ['BreakIn', 'FacilityRequest'])
-            
+
             ->orderBy('Date', 'desc')
             ->orderBy('Time', 'desc')
             ->paginate(10);
 
-        return view('home', compact('XmlDatas'));
+        $start = new Carbon('6 days ago');
+        $end = new Carbon;
+        $max = $end;
+        $min = null;
+        $calId = 'logCal';
+        $oCal = DateRangePickerHelper::init($calId, $start, $end, $min, $max, ['drops' => 'down', 'apply.daterangepicker' => $oTable->outputReload()]);
+
+
+
+        return view('home', [
+            'XmlDatas' => $XmlDatas,
+            'calendar' => $oCal,
+        ]);
     }
 }
