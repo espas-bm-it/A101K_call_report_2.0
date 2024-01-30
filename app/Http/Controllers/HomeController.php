@@ -43,9 +43,9 @@ class HomeController extends Controller
         }
 
         $XmlDatas = XmlData::select('SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CallStatus', 'CommunicationType')
-            ->whereBetween('Date', [$startDate, $endDate])
+            
             ->whereNotIn('CommunicationType', ['BreakIn', 'FacilityRequest'])
-            ->groupBy('SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CallStatus', 'CommunicationType') // um nur ein anruf zu anzeigen und nicht mehrere mal den gleichen anruf
+            
             ->orderBy('Date', 'desc')
             ->orderBy('Time', 'desc')
             ->paginate(10);
