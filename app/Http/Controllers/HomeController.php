@@ -6,6 +6,8 @@ use App\Models\XmlData;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Seblhaire\DateRangePickerHelper\DateRangePickerHelper;
+use Kyslik\ColumnSortable\Sortable;
+
 
 class HomeController extends Controller
 {
@@ -14,6 +16,7 @@ class HomeController extends Controller
      *
      * @return void
      */
+    use Sortable;
     public function __construct()
     {
         $this->middleware('auth');
@@ -30,6 +33,8 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
+        
+
         $sortableColumns = ['SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CallStatus', 'CommunicationType'];
 
         $latestCall = XmlData::latest('Date')->first();
@@ -43,7 +48,9 @@ class HomeController extends Controller
             $endDate = Carbon::now();
         }
 
-        $XmlDatas = XmlData::select('SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CallStatus', 'CommunicationType')
+
+        $XmlDatas = XmlData::sortable($sortableColumns)->select('SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CallStatus', 'CommunicationType')
+            
 
             ->whereNotIn('CommunicationType', ['BreakIn', 'FacilityRequest'])
 
