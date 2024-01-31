@@ -7,36 +7,57 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Seblhaire\DateRangePickerHelper\DateRangePickerHelper;
 use Kyslik\ColumnSortable\Sortable;
-
+use Illuminate\Support\Facades\View;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     use Sortable;
+
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-
-
-    // index function returns the view home and gives with it a paginated query of all objects in the database
-
     public function index(Request $request)
     {
-        
-
         $sortableColumns = ['SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CallStatus', 'CommunicationType'];
 
+        list($startDate, $endDate) = $this->calculateDateRange();
+
+        $XmlDatas = XmlData::sortable($sortableColumns)->select('SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CallStatus', 'CommunicationType')
+            ->whereNotIn('CommunicationType', ['BreakIn', 'FacilityRequest'])
+            ->orderBy('Date', 'desc')
+            ->orderBy('Time', 'desc')
+            ->paginate(10);
+
+        $start = new Carbon('6 days ago');
+        $end = new Carbon;
+        $max = $end;
+        $min = null;
+        $calId = 'logCal';
+        $oCal = DateRangePickerHelper::init($calId, $start, $end, $min, $max, ['drops' => 'down']);
+
+        return view('home', [
+            'XmlDatas' => $XmlDatas,
+            'calendar' => $oCal,
+        ]);
+    }
+
+    public function updateXmlData(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $updatedXmlDatas = XmlData::whereBetween('Date', [$startDate, $endDate])
+            ->orderBy('Date', 'desc')
+            ->orderBy('Time', 'desc')
+            ->get();
+
+        return View::make('partials.xml_data_table', ['XmlDatas' => $updatedXmlDatas]);
+    }
+
+    private function calculateDateRange()
+    {
         $latestCall = XmlData::latest('Date')->first();
 
         if ($latestCall) {
@@ -48,28 +69,6 @@ class HomeController extends Controller
             $endDate = Carbon::now();
         }
 
-
-        $XmlDatas = XmlData::sortable($sortableColumns)->select('SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CallStatus', 'CommunicationType')
-            
-
-            ->whereNotIn('CommunicationType', ['BreakIn', 'FacilityRequest'])
-
-            ->orderBy('Date', 'desc')
-            ->orderBy('Time', 'desc')
-            ->paginate(10);
-
-        $start = new Carbon('6 days ago');
-        $end = new Carbon;
-        $max = $end;
-        $min = null;
-        $calId = 'logCal';
-        $oCal = DateRangePickerHelper::init($calId, $start, $end, $min, $max, ['drops' => 'down', 'apply.daterangepicker' => $oTable->outputReload()]);
-
-
-
-        return view('home', [
-            'XmlDatas' => $XmlDatas,
-            'calendar' => $oCal,
-        ]);
+        return [$startDate, $endDate];
     }
 }

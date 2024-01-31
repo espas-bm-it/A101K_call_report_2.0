@@ -5,7 +5,7 @@
 
         <div>
             <!--Dste range picker button -->
-            <a href="#" id="dateRangePickerBtn">Datum Bereich auswählen</a>
+            <a href="#" id="dateRangePickerBtn">Datum Bereich auswählen{!! $calendar->output() !!}</a>
         </div>
 
         <div class="row justify-content-center">
@@ -24,7 +24,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($XmlDatas as $XmlData)
+                        @forelse ($XmlDatas as $XmlData)
                             <tr>
                                 <!--  Data output here in paginated form  -->
                                 <td>{{ $XmlData->SubscriberName }}</td>
@@ -37,7 +37,11 @@
                                 <td>{{ $XmlData->CallStatus }}</td>
                                 <td>{{ $XmlData->CommunicationType }}</td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="8">Keine Daten verfügbar.</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
                 <!-- Pagination HTML Markup -->
