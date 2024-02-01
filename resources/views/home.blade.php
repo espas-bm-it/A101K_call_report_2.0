@@ -5,7 +5,7 @@
 
         <div>
             <!--Dste range picker button -->
-            <a href="#" id="dateRangePickerBtn">Datum Bereich auswählen{!! $calendar->output() !!}</a>
+            <a href="#" id="dateRangePickerBtn">Datum Bereich auswählen</a>
         </div>
 
         <div class="row justify-content-center">
