@@ -1,10 +1,12 @@
 <?php
 
+use App\DataTables\XmlDataDataTable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReadXmlController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\XmlDataDataTableController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,8 +28,11 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::get('/home/datatables', [App\Http\Controllers\HomeController::class, 'datatables'])->name('home');
+
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::post('/updateXmlData', [HomeController::class, 'updateXmlData']);
 

@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Seblhaire\DateRangePickerHelper\DateRangePickerHelper;
 use Kyslik\ColumnSortable\Sortable;
 use Illuminate\Support\Facades\View;
+use App\DataTables\XmlDataDataTable;
 
 class HomeController extends Controller
 {
@@ -18,24 +19,43 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(Request $request)
+    public function index(XmlDataDataTable $dataTable)
     {
-        $sortableColumns = ['SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CallStatus', 'CommunicationType'];
 
-
-
-        $XmlDatas = XmlData::sortable($sortableColumns)->select('SubscriberName', 'DialledNumber', 'Date', 'Time', 'RingingDuration', 'CallDuration', 'CallStatus', 'CommunicationType')
-            ->whereNotIn('CommunicationType', ['BreakIn', 'FacilityRequest'])
-            ->orderBy('Date', 'desc')
-            ->orderBy('Time', 'desc')
-            ->paginate(10);
-
-       
-        return view('home', [
-            'XmlDatas' => $XmlDatas,
-            
-        ]);
+        return $dataTable->render('home');
     }
 
+    public function datatables(XmlDataDataTable $dataTable)
+    {
+        return $dataTable->ajax();
+    }
+
+
+    public function updateXmlData(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $updatedXmlDatas = XmlData::whereBetween('Date', [$startDate, $endDate])
+            ->orderBy('Date', 'desc')
+            ->orderBy('Time', 'desc')
+            ->get();
+
+        return View::make('partials.xml_data_table', ['XmlDatas' => $updatedXmlDatas]);
+    }
+
+    private function calculateDateRange()
+    {
+        $latestCall = XmlData::latest('Date')->first();
+
+        if ($latestCall) {
+            $endDate = Carbon::parse($latestCall->Date);
+            $startDate = $endDate->copy()->subDays(5)->startOfDay();
+        } else {
+            // Fallback, wenn keine Anrufe vorhanden sind
+            $startDate = Carbon::now()->subDays(5)->startOfDay();
+            $endDate = Carbon::now();
+        }
+    }
 
 }
