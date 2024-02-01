@@ -10,6 +10,8 @@ class XmlData extends Model
 {
     use HasFactory, Sortable;
 
+    protected $table = 'xml_data';
+
     public $timestamps = false;
 
     protected $dates = [];
