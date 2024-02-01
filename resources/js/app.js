@@ -1,6 +1,6 @@
 // Importe hinzufügen, falls noch nicht vorhanden
 import './bootstrap';
-import $ from 'jquery';
+import 'laravel-datatables-vite';
 require('bootstrap');
 require('daterangepicker');
 
