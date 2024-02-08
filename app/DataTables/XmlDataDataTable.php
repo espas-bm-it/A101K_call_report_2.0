@@ -94,14 +94,14 @@ class XmlDataDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'SubscriberName',
-            'DialledNumber',
-            'Date',
-            'Time',
-            'RingingDuration',
-            'CallDuration',
-            'CallStatus',
-            'CommunicationType',
+            'SubscriberName'=> ['title' => 'Kund'],
+            'DialledNumber'=> ['title' => 'Tel. Nummer'],
+            'Date'=> ['title' => 'Datum'],
+            'Time'=> ['title' => 'Uhrzeit'],
+            'RingingDuration'=> ['title' => 'Klingeldauer'],
+            'CallDuration'=> ['title' => 'A. Dauer'],
+            'CallStatus'=> ['title' => 'A. Status'],
+            'CommunicationType'=> ['title' => 'A. Typ'],
         ];
     }
 
