@@ -18,7 +18,7 @@
                 <!--        ------         -->
             </div>
             <div class="card-body">
-                {!! $dataTable->table(['class' => 'table table-bordered', 'id' => 'daterange_table']) !!}
+                {!! $dataTable->table(['class' => 'table table-bordered', 'id' => 'daterange_table'], true) !!}
             </div>
         </div>
     </div>

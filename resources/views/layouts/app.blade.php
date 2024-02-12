@@ -24,6 +24,8 @@
   
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
 
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
