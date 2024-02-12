@@ -98,6 +98,9 @@ class XmlDataDataTable extends DataTable
         ->orderBy(2)
         ->selectStyleSingle()
         ->parameters([
+            'drawCallback' => 'function() {
+                $(".dataTables_filter").hide();
+            }',
             'footerCallback' => "
                 function (row, data, start, end, display) {
                     var api = this.api();
