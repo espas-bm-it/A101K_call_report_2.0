@@ -71,22 +71,83 @@ class XmlDataDataTable extends DataTable
      * Optional method if you want to use the html builder.
      */
     public function html(): HtmlBuilder
-    {
-        return $this->builder()
-            ->columns($this->getColumns())
-            ->minifiedAjax()
-            //->dom('Bfrtip')
-            ->orderBy(2)
-            ->selectStyleSingle()
-            ->buttons([
-                Button::make('excel'),
-                Button::make('csv'),
-                Button::make('pdf'),
-                Button::make('print'),
-                Button::make('reset'),
-                Button::make('reload')
-            ])
-            ->parameters([
+{
+    // Getting unique SubscriberName values for column 0
+    $uniqueSubscriberNames = XmlData::pluck('SubscriberName')->unique()->values()->toArray();
+    $subscriberNameOptions = '<option value="" selected style="font-weight: bold;">Filter auflösen</option>'; // Default option
+    foreach ($uniqueSubscriberNames as $subscriberName) {
+        $subscriberNameOptions .= '<option value="' . $subscriberName . '">' . $subscriberName . '</option>';
+    }
+
+    // Update footer for column 0 (SubscriberName)
+    $subscriberNameOptions = '<option value="">Filter auswählen</option>' . $subscriberNameOptions;
+
+    // Getting unique CallStatus values for column 6
+    $uniqueCallStatuses = XmlData::pluck('CallStatus')->unique()->values()->toArray();
+    $callStatusOptions = '<option value="" selected style="font-weight: bold;">Filter auflösen</option>'; // Default option
+    foreach ($uniqueCallStatuses as $callStatus) {
+        $callStatusOptions .= '<option value="' . $callStatus . '">' . $callStatus . '</option>';
+
+    }
+
+    // Add "Filter auflösen" option as the first option
+    $callStatusOptions = '<option value="">Filter auswählen</option>' . $callStatusOptions;
+
+    return $this->builder()
+        ->columns($this->getColumns())
+        ->minifiedAjax()
+        ->orderBy(2)
+        ->selectStyleSingle()
+        ->parameters([
+            'drawCallback' => 'function() {
+                $(".dataTables_filter").hide();
+            }',
+            'footerCallback' => "
+                function (row, data, start, end, display) {
+                    var api = this.api();
+
+                    // Update footer for column 0 (SubscriberName)
+                    api.column(0).footer().innerHTML = '<select id=\"selectColumn0\">" . $subscriberNameOptions . "</select>';
+                    // Add onchange event handler for column 0
+                    $('#selectColumn0').on('change', function () {
+                        var selectedValue = $(this).val();
+                        api.column(0).search(selectedValue).draw();
+                    });
+
+                    // Set selected option based on current filter for column 0
+                    var currentFilter0 = api.column(0).search();
+                    $('#selectColumn0').val(currentFilter0);
+
+                    // Check if the datepicker has already been initialized
+                    var datepickerExists = $('#datepickerColumn2').length;
+                    if (!datepickerExists) {
+                        // Update footer for column 2 (Date)
+                        var dateFilterInput = $('<input type=\"text\" class=\"datepicker\" id=\"datepickerColumn2\" />').appendTo(api.column(2).footer()).on('change', function () {
+                            api.column(2).search($(this).val()).draw();
+                        });
+
+                        // Set datepicker for column 2
+                        dateFilterInput.datepicker({
+                            dateFormat: 'yy-mm-dd',
+                            onSelect: function (dateText) {
+                                $(this).val(dateText).trigger('change');
+                            }
+                        });
+                    }
+
+                    // Update footer for column 6 (CallStatus)
+                    api.column(6).footer().innerHTML = '<select id=\"selectColumn6\">" . $callStatusOptions . "</select>';
+                    // Add onchange event handler for column 6
+                    $('#selectColumn6').on('change', function () {
+                        var selectedValue = $(this).val();
+                        api.column(6).search(selectedValue).draw();
+                    });
+
+                    // Set selected option based on current filter for column 6
+                    var currentFilter6 = api.column(6).search();
+                    $('#selectColumn6').val(currentFilter6);
+                }
+            ",
                 'initComplete' => 'function(settings, json) {
                     // Initialisiere den Date Range Picker hier
                     $("#daterange").daterangepicker({
@@ -101,8 +162,20 @@ class XmlDataDataTable extends DataTable
                     });
                 }',
             ])
-            ->dom('Bfrtip');
-    }
+           
+        ])
+        ->buttons([
+            Button::make('excel'),
+            Button::make('csv'),
+            Button::make('pdf'),
+            Button::make('print'),
+            Button::make('reset'),
+            Button::make('reload')
+        ])
+       ->dom('Bfrtip')
+      ;
+}
+
 
     /**
      * Get the dataTable columns definition.
