@@ -17,7 +17,6 @@ class XmlDataDataTable extends DataTable
      * @param QueryBuilder $query Results from query() method.
      */
     public function dataTable($query)
-
 {
     return datatables()
         ->eloquent($query)
@@ -57,40 +56,24 @@ class XmlDataDataTable extends DataTable
                     case '44': // Großbritannien
                         $formattedNumber .= substr($phoneNumber, 2, 4) . ' ' . substr($phoneNumber, 6, 4) . ' ' . substr($phoneNumber, 10, 2) . ' ' . substr($phoneNumber, 12, 2);
                         break;
-
                     // Weitere Ländercodes hier hinzufügen...
-                ];
-
-                $countryCode = substr($phoneNumber, 0, 2);
-
-                if (isset($countryCodes[$countryCode])) {
-                    $formattedNumber = '+' . $countryCode . ' ';
-
-                    switch ($countryCode) {
-                        case '41': // Schweiz
-                            $formattedNumber .= substr($phoneNumber, 2, 2) . ' ' . substr($phoneNumber, 4, 3) . ' ' . substr($phoneNumber, 7, 2) . ' ' . substr($phoneNumber, 9, 2);
-                            break;
-                        case '44': // Großbritannien
-                            $formattedNumber .= substr($phoneNumber, 2, 4) . ' ' . substr($phoneNumber, 6, 4) . ' ' . substr($phoneNumber, 10, 2) . ' ' . substr($phoneNumber, 12, 2);
-                            break;
-                            // Weitere Ländercodes hier hinzufügen...
-                        default:
-                            $formattedNumber .= substr($phoneNumber, 2);
-                            break;
-                    }
-                } else {
-                    if (strlen($phoneNumber) == 10) {
-                        $formattedNumber = '+41 ' . substr($phoneNumber, 1, 2) . ' ' . substr($phoneNumber, 3, 3) . ' ' . substr($phoneNumber, 6, 2) . ' ' . substr($phoneNumber, 8, 2);
-                    } elseif (strlen($phoneNumber) == 11) {
-                        $formattedNumber = '+' . substr($phoneNumber, 0, 2) . ' ' . substr($phoneNumber, 2, 2) . ' ' . substr($phoneNumber, 4, 3) . ' ' . substr($phoneNumber, 7, 2) . ' ' . substr($phoneNumber, 9, 2);
-                    } else {
-                        $formattedNumber = $phoneNumber;
-                    }
+                    default:
+                        $formattedNumber .= substr($phoneNumber, 2);
+                        break;
                 }
+            } else {
+                if (strlen($phoneNumber) == 10) {
+                    $formattedNumber = '+41 ' . substr($phoneNumber, 1, 2) . ' ' . substr($phoneNumber, 3, 3) . ' ' . substr($phoneNumber, 6, 2) . ' ' . substr($phoneNumber, 8, 2);
+                } elseif (strlen($phoneNumber) == 11) {
+                    $formattedNumber = '+' . substr($phoneNumber, 0, 2) . ' ' . substr($phoneNumber, 2, 2) . ' ' . substr($phoneNumber, 4, 3) . ' ' . substr($phoneNumber, 7, 2) . ' ' . substr($phoneNumber, 9, 2);
+                } else {
+                    $formattedNumber = $phoneNumber;
+                }
+            }
 
-                return $formattedNumber;
-            });
-    }
+            return $formattedNumber;
+        });
+}
 
     /**
      * Get the query source of dataTable.
@@ -120,7 +103,6 @@ class XmlDataDataTable extends DataTable
     $callStatusOptions = '<option value="" selected style="font-weight: bold;">Filter auflösen</option>'; // Default option
     foreach ($uniqueCallStatuses as $callStatus) {
         $callStatusOptions .= '<option value="' . $callStatus . '">' . $callStatus . '</option>';
-
     }
 
     // Add "Filter auflösen" option as the first option
@@ -184,21 +166,6 @@ class XmlDataDataTable extends DataTable
                     $('#selectColumn6').val(currentFilter6);
                 }
             ",
-                'initComplete' => 'function(settings, json) {
-                    // Initialisiere den Date Range Picker hier
-                    $("#daterange").daterangepicker({
-                        opens: "left",
-                        locale: {
-                            format: "YYYY-MM-DD"
-                        }
-                    }, function (start, end, label) {
-                        // Callback-Funktion bei Auswahl des Datumsbereichs
-                        // Hier kannst du deine Logik implementieren, um die Daten neu zu laden
-                        // zum Beispiel: daterangeTable.ajax.url("neue_daten_url").load();
-                    });
-                }',
-            ])
-           
         ])
         ->buttons([
             Button::make('excel'),
@@ -207,9 +174,7 @@ class XmlDataDataTable extends DataTable
             Button::make('print'),
             Button::make('reset'),
             Button::make('reload')
-        ])
-       ->dom('Bfrtip')
-      ;
+        ]);
 }
 
 
@@ -219,7 +184,6 @@ class XmlDataDataTable extends DataTable
     protected function getColumns()
     {
         return [
-
             'SubscriberName'=> ['title' => 'Kund'],
             'DialledNumber'=> ['title' => 'Tel. Nummer'],
             'formatted_date'=> ['title' => 'Datum'],
@@ -228,7 +192,6 @@ class XmlDataDataTable extends DataTable
             'CallDuration'=> ['title' => 'A. Dauer'],
             'CallStatus'=> ['title' => 'A. Status'],
             'CommunicationType'=> ['title' => 'A. Typ'],
-
         ];
     }
 
