@@ -2,11 +2,12 @@
 
 namespace App\DataTables;
 
+use Carbon\Carbon;
 use App\Models\XmlData;
-use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Services\DataTable;
+use Yajra\DataTables\Html\Builder as HtmlBuilder;
+use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 
 class XmlDataDataTable extends DataTable
 {
@@ -16,15 +17,47 @@ class XmlDataDataTable extends DataTable
      * @param QueryBuilder $query Results from query() method.
      */
     public function dataTable($query)
-    {
-        return datatables()
-            ->eloquent($query)
-            ->editColumn('DialledNumber', function ($data) {
-                $phoneNumber = $data->DialledNumber;
 
-                $countryCodes = [
-                    '41' => 'Schweiz',
-                    '44' => 'Großbritannien',
+{
+    return datatables()
+        ->eloquent($query)
+        ->addColumn('formatted_date', function ($model) {
+            return Carbon::parse($model->Date)->isoFormat('YYYY-MM-DD');
+        })
+        ->filterColumn('formatted_date', function ($query, $keyword) {
+            $date = Carbon::createFromFormat('Y-m-d', $keyword);
+            $query->whereDate('Date', '=', $date);
+        })
+        ->editColumn('formatted_date', function ($model) {
+            return Carbon::parse($model->Date)->isoFormat('DD.MM.YYYY');
+        })
+        ->rawColumns(['formatted_date'])
+        ->orderColumn('formatted_date', function ($query, $order) {
+            // Sort the query based on the 'Date' column
+            $query->orderBy('Date', $order);
+        })
+        ->editColumn('DialledNumber', function ($model) {
+            $phoneNumber = $model->DialledNumber;
+
+            $countryCodes = [
+                '41' => 'Schweiz',
+                '44' => 'Großbritannien',
+                // Weitere Ländercodes hier hinzufügen...
+            ];
+
+            $countryCode = substr($phoneNumber, 0, 2);
+
+            if (isset($countryCodes[$countryCode])) {
+                $formattedNumber = '+' . $countryCode . ' ';
+
+                switch ($countryCode) {
+                    case '41': // Schweiz
+                        $formattedNumber .= substr($phoneNumber, 2, 2) . ' ' . substr($phoneNumber, 4, 3) . ' ' . substr($phoneNumber, 7, 2) . ' ' . substr($phoneNumber, 9, 2);
+                        break;
+                    case '44': // Großbritannien
+                        $formattedNumber .= substr($phoneNumber, 2, 4) . ' ' . substr($phoneNumber, 6, 4) . ' ' . substr($phoneNumber, 10, 2) . ' ' . substr($phoneNumber, 12, 2);
+                        break;
+
                     // Weitere Ländercodes hier hinzufügen...
                 ];
 
@@ -99,6 +132,9 @@ class XmlDataDataTable extends DataTable
         ->orderBy(2)
         ->selectStyleSingle()
         ->parameters([
+            'columnDefs' => [
+                ['orderable' => true, 'targets' => [2]] // Specify the index of your custom column
+            ],
             'drawCallback' => 'function() {
                 $(".dataTables_filter").hide();
             }',
@@ -183,14 +219,16 @@ class XmlDataDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'SubscriberName' => ['title' => 'Kund'],
-            'DialledNumber' => ['title' => 'Tel. Nummer'],
-            'Date' => ['title' => 'Datum'],
-            'Time' => ['title' => 'Uhrzeit'],
-            'RingingDuration' => ['title' => 'Klingeldauer'],
-            'CallDuration' => ['title' => 'A. Dauer'],
-            'CallStatus' => ['title' => 'A. Status'],
-            'CommunicationType' => ['title' => 'A. Typ'],
+
+            'SubscriberName'=> ['title' => 'Kund'],
+            'DialledNumber'=> ['title' => 'Tel. Nummer'],
+            'formatted_date'=> ['title' => 'Datum'],
+            'Time'=> ['title' => 'Uhrzeit'],
+            'RingingDuration'=> ['title' => 'Klingeldauer'],
+            'CallDuration'=> ['title' => 'A. Dauer'],
+            'CallStatus'=> ['title' => 'A. Status'],
+            'CommunicationType'=> ['title' => 'A. Typ'],
+
         ];
     }
 
