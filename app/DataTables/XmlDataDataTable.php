@@ -2,11 +2,12 @@
 
 namespace App\DataTables;
 
+use Carbon\Carbon;
 use App\Models\XmlData;
-use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Services\DataTable;
+use Yajra\DataTables\Html\Builder as HtmlBuilder;
+use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 
 class XmlDataDataTable extends DataTable
 {
@@ -19,8 +20,23 @@ class XmlDataDataTable extends DataTable
 {
     return datatables()
         ->eloquent($query)
-        ->editColumn('DialledNumber', function ($data) {
-            $phoneNumber = $data->DialledNumber;
+        ->addColumn('formatted_date', function ($model) {
+            return Carbon::parse($model->Date)->isoFormat('YYYY-MM-DD');
+        })
+        ->filterColumn('formatted_date', function ($query, $keyword) {
+            $date = Carbon::createFromFormat('Y-m-d', $keyword);
+            $query->whereDate('Date', '=', $date);
+        })
+        ->editColumn('formatted_date', function ($model) {
+            return Carbon::parse($model->Date)->isoFormat('DD.MM.YYYY');
+        })
+        ->rawColumns(['formatted_date'])
+        ->orderColumn('formatted_date', function ($query, $order) {
+            // Sort the query based on the 'Date' column
+            $query->orderBy('Date', $order);
+        })
+        ->editColumn('DialledNumber', function ($model) {
+            $phoneNumber = $model->DialledNumber;
 
             $countryCodes = [
                 '41' => 'Schweiz',
@@ -98,6 +114,9 @@ class XmlDataDataTable extends DataTable
         ->orderBy(2)
         ->selectStyleSingle()
         ->parameters([
+            'columnDefs' => [
+                ['orderable' => true, 'targets' => [2]] // Specify the index of your custom column
+            ],
             'drawCallback' => 'function() {
                 $(".dataTables_filter").hide();
             }',
@@ -167,7 +186,7 @@ class XmlDataDataTable extends DataTable
         return [
             'SubscriberName'=> ['title' => 'Kund'],
             'DialledNumber'=> ['title' => 'Tel. Nummer'],
-            'Date'=> ['title' => 'Datum'],
+            'formatted_date'=> ['title' => 'Datum'],
             'Time'=> ['title' => 'Uhrzeit'],
             'RingingDuration'=> ['title' => 'Klingeldauer'],
             'CallDuration'=> ['title' => 'A. Dauer'],
