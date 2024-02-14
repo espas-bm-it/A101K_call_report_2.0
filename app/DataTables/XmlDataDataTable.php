@@ -21,19 +21,32 @@ class XmlDataDataTable extends DataTable
     return datatables()
         ->eloquent($query)
         ->addColumn('formatted_date', function ($model) {
-            return Carbon::parse($model->Date)->isoFormat('YYYY-MM-DD');
+            // Check if the 'Date' property exists and is not null
+            if (isset($model->Date)) {
+                // Format the 'Date' property as 'formatted_date'
+                $formattedDate = Carbon::parse($model->Date)->isoFormat('DD.MM.YYYY');
+                
+            } else {
+                // Log if the 'Date' property is missing or null
+                \Illuminate\Support\Facades\Log::info("Date property is missing or null");
+                return null; // Or any fallback value you prefer
+            }
         })
         ->filterColumn('formatted_date', function ($query, $keyword) {
-            $date = Carbon::createFromFormat('Y-m-d', $keyword);
-            $query->whereDate('Date', '=', $date);
+            $dates = explode('|', $keyword);
+            $startDate = Carbon::createFromFormat('d-m-Y', $dates[0])->startOfDay();
+            $endDate = Carbon::createFromFormat('d-m-Y', $dates[1])->endOfDay();
+            $query->whereBetween('Date', [$startDate, $endDate]);
         })
         ->editColumn('formatted_date', function ($model) {
             return Carbon::parse($model->Date)->isoFormat('DD.MM.YYYY');
+            
         })
         ->rawColumns(['formatted_date'])
         ->orderColumn('formatted_date', function ($query, $order) {
             // Sort the query based on the 'Date' column
             $query->orderBy('Date', $order);
+            
         })
         ->editColumn('DialledNumber', function ($model) {
             $phoneNumber = $model->DialledNumber;
@@ -108,6 +121,8 @@ class XmlDataDataTable extends DataTable
     // Add "Filter auflösen" option as the first option
     $callStatusOptions = '<option value="">Filter auswählen</option>' . $callStatusOptions;
 
+    
+
     return $this->builder()
         ->columns($this->getColumns())
         ->minifiedAjax()
@@ -136,22 +151,7 @@ class XmlDataDataTable extends DataTable
                     var currentFilter0 = api.column(0).search();
                     $('#selectColumn0').val(currentFilter0);
 
-                    // Check if the datepicker has already been initialized
-                    var datepickerExists = $('#datepickerColumn2').length;
-                    if (!datepickerExists) {
-                        // Update footer for column 2 (Date)
-                        var dateFilterInput = $('<input type=\"text\" class=\"datepicker\" id=\"datepickerColumn2\" />').appendTo(api.column(2).footer()).on('change', function () {
-                            api.column(2).search($(this).val()).draw();
-                        });
-
-                        // Set datepicker for column 2
-                        dateFilterInput.datepicker({
-                            dateFormat: 'yy-mm-dd',
-                            onSelect: function (dateText) {
-                                $(this).val(dateText).trigger('change');
-                            }
-                        });
-                    }
+                    
 
                     // Update footer for column 6 (CallStatus)
                     api.column(6).footer().innerHTML = '<select id=\"selectColumn6\">" . $callStatusOptions . "</select>';
@@ -166,6 +166,33 @@ class XmlDataDataTable extends DataTable
                     $('#selectColumn6').val(currentFilter6);
                 }
             ",
+            'initComplete' => 'function(settings, json) {
+                $(document).ready(function() {
+                    // Initialize the Date Range Picker here
+                    var dateRangeInput = $("#daterange");
+                    var dataTable = $("#daterange_table").DataTable(); // Select the DataTable by its ID
+            
+                    // Set the default message
+                    dateRangeInput.html("Datumsbereich auswählen");
+            
+                    dateRangeInput.daterangepicker({
+                        opens: "left",
+                        locale: {
+                            format: "DD-MM-YYYY"
+                        }
+                    }, function (start, end, label) {
+                        // Callback function when date range is selected
+                        var startDate = start.format("DD-MM-YYYY");
+                        var endDate = end.format("DD-MM-YYYY");
+            
+                        // Update the selected date range in the div
+                        dateRangeInput.html(startDate + "  |  " + endDate);
+            
+                        // Update the DataTable with the selected date range
+                        dataTable.column(2).search(startDate + "|" + endDate, true, false).draw(); // Search and draw for the date range
+                    });
+                });
+            }',
         ])
         ->buttons([
             Button::make('excel'),
