@@ -40,6 +40,8 @@
     <!-- DataTables Language File CDN -->
     <script src="//cdn.datatables.net/plug-ins/1.10.24/i18n/German.json"></script>
 
+    <script src="{{url('js/app.js')}}" defer></script>
+
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
