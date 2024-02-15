@@ -109,7 +109,7 @@ class XmlDataDataTable extends DataTable
     }
 
     // Update select for column 0 (SubscriberName)
-    $subscriberNameOptions = '<option value="">Filter auswählen</option>' . $subscriberNameOptions;
+    $subscriberNameOptions = '<option value="">Nach Kunde filtrieren</option>' . $subscriberNameOptions;
 
     // Getting unique CallStatus values for column 6
     $uniqueCallStatuses = XmlData::pluck('CallStatus')->unique()->values()->toArray();
@@ -119,7 +119,7 @@ class XmlDataDataTable extends DataTable
     }
 
     // Add "Filter auflösen" option as the first option
-    $callStatusOptions = '<option value="">Filter auswählen</option>' . $callStatusOptions;
+    $callStatusOptions = '<option value="">Nach A. Status filtrieren</option>' . $callStatusOptions;
 
     return $this->builder()
         ->columns($this->getColumns())
@@ -133,18 +133,21 @@ class XmlDataDataTable extends DataTable
             'drawCallback' => 'function() {
                 $(".dataTables_filter").hide();
             }',
+            'language' => [
+                'url' => '//cdn.datatables.net/plug-ins/1.10.24/i18n/German.json' // URL to the language file
+            ],
             'initComplete' => 'function(settings, json) {
                 var api = this.api();
 
                 // Update select filters for column 0 (SubscriberName)
-                $("#selectCustomer-container").html(\'<select id="selectColumn0">' . $subscriberNameOptions . '</select>\');
+                $("#selectCustomer-container").html(\'<select id="selectColumn0" class="form-select">' . $subscriberNameOptions . '</select>\');
                 $("#selectCustomer-container select").on("change", function() {
                     var selectedValue = $(this).val();
                     api.column(0).search(selectedValue).draw();
                 });
 
                 // Update select filters for column 6 (CallStatus)
-                $("#selectStatus-container").html(\'<select id="selectColumn6">' . $callStatusOptions . '</select>\');
+                $("#selectStatus-container").html(\'<select id="selectColumn6" class="form-select">' . $callStatusOptions . '</select>\');
                 $("#selectStatus-container select").on("change", function() {
                     var selectedValue = $(this).val();
                     api.column(6).search(selectedValue).draw();
@@ -198,7 +201,7 @@ class XmlDataDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'SubscriberName'=> ['title' => 'Kund'],
+            'SubscriberName'=> ['title' => 'Kunde'],
             'DialledNumber'=> ['title' => 'Tel. Nummer'],
             'formatted_date'=> ['title' => 'Datum'],
             'Time'=> ['title' => 'Uhrzeit'],
