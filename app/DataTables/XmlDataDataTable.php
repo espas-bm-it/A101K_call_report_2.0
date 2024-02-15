@@ -101,14 +101,14 @@ class XmlDataDataTable extends DataTable
      */
     public function html(): HtmlBuilder
 {
-    // Getting unique SubscriberName values for column 0
+    // Getting unique SubscriberName values for customer selection
     $uniqueSubscriberNames = XmlData::pluck('SubscriberName')->unique()->values()->toArray();
     $subscriberNameOptions = '<option value="" selected style="font-weight: bold;">Filter auflösen</option>'; // Default option
     foreach ($uniqueSubscriberNames as $subscriberName) {
         $subscriberNameOptions .= '<option value="' . $subscriberName . '">' . $subscriberName . '</option>';
     }
 
-    // Update footer for column 0 (SubscriberName)
+    // Update select for column 0 (SubscriberName)
     $subscriberNameOptions = '<option value="">Filter auswählen</option>' . $subscriberNameOptions;
 
     // Getting unique CallStatus values for column 6
@@ -120,8 +120,6 @@ class XmlDataDataTable extends DataTable
 
     // Add "Filter auflösen" option as the first option
     $callStatusOptions = '<option value="">Filter auswählen</option>' . $callStatusOptions;
-
-    
 
     return $this->builder()
         ->columns($this->getColumns())
@@ -135,62 +133,51 @@ class XmlDataDataTable extends DataTable
             'drawCallback' => 'function() {
                 $(".dataTables_filter").hide();
             }',
-            'footerCallback' => "
-                function (row, data, start, end, display) {
-                    var api = this.api();
-
-                    // Update footer for column 0 (SubscriberName)
-                    api.column(0).footer().innerHTML = '<select id=\"selectColumn0\">" . $subscriberNameOptions . "</select>';
-                    // Add onchange event handler for column 0
-                    $('#selectColumn0').on('change', function () {
-                        var selectedValue = $(this).val();
-                        api.column(0).search(selectedValue).draw();
-                    });
-
-                    // Set selected option based on current filter for column 0
-                    var currentFilter0 = api.column(0).search();
-                    $('#selectColumn0').val(currentFilter0);
-
-                    
-
-                    // Update footer for column 6 (CallStatus)
-                    api.column(6).footer().innerHTML = '<select id=\"selectColumn6\">" . $callStatusOptions . "</select>';
-                    // Add onchange event handler for column 6
-                    $('#selectColumn6').on('change', function () {
-                        var selectedValue = $(this).val();
-                        api.column(6).search(selectedValue).draw();
-                    });
-
-                    // Set selected option based on current filter for column 6
-                    var currentFilter6 = api.column(6).search();
-                    $('#selectColumn6').val(currentFilter6);
-                }
-            ",
             'initComplete' => 'function(settings, json) {
-                $(document).ready(function() {
-                    // Initialize the Date Range Picker here
-                    var dateRangeInput = $("#daterange");
-                    var dataTable = $("#daterange_table").DataTable(); // Select the DataTable by its ID
+                var api = this.api();
+
+                // Update select filters for column 0 (SubscriberName)
+                $("#selectCustomer-container").html(\'<select id="selectColumn0">' . $subscriberNameOptions . '</select>\');
+                $("#selectCustomer-container select").on("change", function() {
+                    var selectedValue = $(this).val();
+                    api.column(0).search(selectedValue).draw();
+                });
+
+                // Update select filters for column 6 (CallStatus)
+                $("#selectStatus-container").html(\'<select id="selectColumn6">' . $callStatusOptions . '</select>\');
+                $("#selectStatus-container select").on("change", function() {
+                    var selectedValue = $(this).val();
+                    api.column(6).search(selectedValue).draw();
+                });
+
+                // Set selected options based on current filters
+                var currentFilter0 = api.column(0).search();
+                $("#selectCustomer-container select").val(currentFilter0);
+                var currentFilter6 = api.column(6).search();
+                $("#selectStatus-container select").val(currentFilter6);
+
+                // Initialize the Date Range Picker here
+                var dateRangeInput = $("#daterange");
+                var dataTable = $("#daterange_table").DataTable(); // Select the DataTable by its ID
             
-                    // Set the default message
-                    dateRangeInput.html("Datumsbereich auswählen");
+                // Set the default message
+                dateRangeInput.html("Datumsbereich auswählen");
             
-                    dateRangeInput.daterangepicker({
-                        opens: "left",
-                        locale: {
-                            format: "DD-MM-YYYY"
-                        }
-                    }, function (start, end, label) {
-                        // Callback function when date range is selected
-                        var startDate = start.format("DD-MM-YYYY");
-                        var endDate = end.format("DD-MM-YYYY");
+                dateRangeInput.daterangepicker({
+                    opens: "left",
+                    locale: {
+                        format: "DD-MM-YYYY"
+                    }
+                }, function (start, end, label) {
+                    // Callback function when date range is selected
+                    var startDate = start.format("DD-MM-YYYY");
+                    var endDate = end.format("DD-MM-YYYY");
             
-                        // Update the selected date range in the div
-                        dateRangeInput.html(startDate + "  |  " + endDate);
+                    // Update the selected date range in the div
+                    dateRangeInput.html(startDate + "  |  " + endDate);
             
-                        // Update the DataTable with the selected date range
-                        dataTable.column(2).search(startDate + "|" + endDate, true, false).draw(); // Search and draw for the date range
-                    });
+                    // Update the DataTable with the selected date range
+                    dataTable.column(2).search(startDate + "|" + endDate, true, false).draw(); // Search and draw for the date range
                 });
             }',
         ])
