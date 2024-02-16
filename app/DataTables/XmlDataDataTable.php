@@ -103,6 +103,10 @@ class XmlDataDataTable extends DataTable
 {
     // Getting unique SubscriberName values for customer selection
     $uniqueSubscriberNames = XmlData::pluck('SubscriberName')->unique()->values()->toArray();
+
+    // Sort the array alphabetically
+    sort($uniqueSubscriberNames);
+
     $subscriberNameOptions = ''; // Default option
     foreach ($uniqueSubscriberNames as $subscriberName) {
         $subscriberNameOptions .= '<option value="' . $subscriberName . '">' . $subscriberName . '</option>';
@@ -113,6 +117,10 @@ class XmlDataDataTable extends DataTable
 
     // Getting unique CallStatus values for column 6
     $uniqueCallStatuses = XmlData::pluck('CallStatus')->unique()->values()->toArray();
+
+     // Sort the array alphabetically
+     sort($uniqueCallStatuses);
+
     $callStatusOptions = ''; // Default option
     foreach ($uniqueCallStatuses as $callStatus) {
         $callStatusOptions .= '<option value="' . $callStatus . '">' . $callStatus . '</option>';
