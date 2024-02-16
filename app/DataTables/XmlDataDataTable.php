@@ -138,11 +138,8 @@ class XmlDataDataTable extends DataTable
             'columnDefs' => [
                 ['orderable' => true, 'targets' => [2]] // Specify the index of your custom column
             ],
-            'drawCallback' => 'function() {
-                $(".dataTables_filter").hide();
-            }',
             'language' => [
-                'url' => '//cdn.datatables.net/plug-ins/1.10.24/i18n/German.json' // URL to the language file
+                'url' => asset('lang/DE_CH.json') // URL to the language file
             ],
             'initComplete' => 'function(settings, json) {
                 var api = this.api();
