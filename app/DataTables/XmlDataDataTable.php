@@ -122,7 +122,7 @@ class XmlDataDataTable extends DataTable
     }
 
     // Update select for column 0 (SubscriberName)
-    $subscriberNameOptions = '<option value="">Nach Kunde filtrieren</option>' . $subscriberNameOptions;
+    $subscriberNameOptions = '<option value="">Nach Kund filtern</option>' . $subscriberNameOptions;
 
     // Getting unique CallStatus values for column 6
     $uniqueCallStatuses = XmlData::pluck('CallStatus')->unique()->values()->toArray();
@@ -136,7 +136,7 @@ class XmlDataDataTable extends DataTable
     }
 
     // Add "Filter auflösen" option as the first option
-    $callStatusOptions = '<option value="">Nach A. Status filtrieren</option>' . $callStatusOptions;
+    $callStatusOptions = '<option value="">Nach Anrufstatus filtern</option>' . $callStatusOptions;
 
     return $this->builder()
         ->columns($this->getColumns())
@@ -217,13 +217,13 @@ class XmlDataDataTable extends DataTable
     {
         return [
             'SubscriberName'=> ['title' => 'Kunde'],
-            'DialledNumber'=> ['title' => 'Tel. Nummer'],
+            'DialledNumber'=> ['title' => 'Telefonnummer'],
             'formatted_date'=> ['title' => 'Datum'],
             'Time'=> ['title' => 'Uhrzeit'],
             'RingingDuration'=> ['title' => 'Klingeldauer'],
-            'CallDuration'=> ['title' => 'A. Dauer'],
-            'CallStatus'=> ['title' => 'A. Status'],
-            'CommunicationType'=> ['title' => 'A. Typ'],
+            'CallDuration'=> ['title' => 'Anrufdauer'],
+            'CallStatus'=> ['title' => 'Anrufstatus'],
+            'CommunicationType'=> ['title' => 'Anruftyp'],
         ];
     }
 
