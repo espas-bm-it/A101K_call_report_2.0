@@ -26,8 +26,8 @@
                 <div class="col col-3"> 
                     <!--        Div for the resset button     -->
                     <div id="reset-btn" class="float-end"
-                        style="background: #ffff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; text-align:center">
-                        Reset
+                        style="background: #E7BDBB; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; text-align:center">
+                        Zurücksetzen
                     </div>
                     
                 </div>
