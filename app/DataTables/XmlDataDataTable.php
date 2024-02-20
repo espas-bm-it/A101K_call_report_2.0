@@ -32,6 +32,12 @@ class XmlDataDataTable extends DataTable
                 return null; // Or any fallback value you prefer
             }
         })
+
+        ->addColumn('SubscriberName', function ($model) {
+            // Display "Nicht registriert" if SubscriberName is null or empty
+            return $model->SubscriberName ? $model->SubscriberName : 'Nicht registriert';
+        })
+
         ->filterColumn('formatted_date', function ($query, $keyword) {
             $dates = explode('|', $keyword);
         
@@ -46,10 +52,12 @@ class XmlDataDataTable extends DataTable
                 }
             }
         })
+
         ->editColumn('formatted_date', function ($model) {
             return Carbon::parse($model->Date)->isoFormat('DD.MM.YYYY');
             
         })
+        
         ->rawColumns(['formatted_date'])
         ->orderColumn('formatted_date', function ($query, $order) {
             // Sort the query based on the 'Date' column
