@@ -34,9 +34,17 @@ class XmlDataDataTable extends DataTable
         })
         ->filterColumn('formatted_date', function ($query, $keyword) {
             $dates = explode('|', $keyword);
-            $startDate = Carbon::createFromFormat('d-m-Y', $dates[0])->startOfDay();
-            $endDate = Carbon::createFromFormat('d-m-Y', $dates[1])->endOfDay();
-            $query->whereBetween('Date', [$startDate, $endDate]);
+        
+            // Check if the input consists of two date values
+            if (count($dates) == 2) {
+                $startDate = Carbon::createFromFormat('d-m-Y', $dates[0])->startOfDay();
+                $endDate = Carbon::createFromFormat('d-m-Y', $dates[1])->endOfDay();
+                
+                // Only apply the date range filter if both dates are valid
+                if ($startDate && $endDate) {
+                    $query->whereBetween('Date', [$startDate, $endDate]);
+                }
+            }
         })
         ->editColumn('formatted_date', function ($model) {
             return Carbon::parse($model->Date)->isoFormat('DD.MM.YYYY');
@@ -48,6 +56,7 @@ class XmlDataDataTable extends DataTable
             $query->orderBy('Date', $order);
             
         })
+        
         ->editColumn('DialledNumber', function ($model) {
             $phoneNumber = $model->DialledNumber;
 
@@ -136,11 +145,12 @@ class XmlDataDataTable extends DataTable
         ->selectStyleSingle()
         ->parameters([
             'columnDefs' => [
-                ['orderable' => true, 'targets' => [2]] // Specify the index of your custom column
+                ['orderable' => true, 'targets' => [2]], // Specify the index of your custom column
             ],
             'language' => [
                 'url' => asset('lang/DE_CH.json') // URL to the language file
             ],
+            'retrieve' => true, // Add the retrieve: true option
             'initComplete' => 'function(settings, json) {
                 var api = this.api();
 
