@@ -32,6 +32,11 @@
                     
                 </div>
             </div>
+            <div class="row">
+                <div class="col col-3">
+                    
+                </div>
+            </div>
             <div class="card-body">
                 {!! $dataTable->table(['class' => 'table table-bordered', 'id' => 'daterange_table']) !!}
             </div>
