@@ -161,27 +161,45 @@ class XmlDataDataTable extends DataTable
             'retrieve' => true, // Add the retrieve: true option
             'initComplete' => 'function(settings, json) {
                 var api = this.api();
-
+            
                 // Update select filters for column 0 (SubscriberName)
                 $("#selectCustomer-container").html(\'<select id="selectColumn0" class="form-select" >' . $subscriberNameOptions . '</select>\');
                 $("#selectCustomer-container select").on("change", function() {
                     var selectedValue = $(this).val();
                     api.column(0).search(selectedValue).draw();
                 });
-
+            
                 // Update select filters for column 6 (CallStatus)
                 $("#selectStatus-container").html(\'<select id="selectColumn6" class="form-select" >' . $callStatusOptions . '</select>\');
                 $("#selectStatus-container select").on("change", function() {
                     var selectedValue = $(this).val();
                     api.column(6).search(selectedValue).draw();
                 });
-
+            
+                // Update select filters for column 7 (CommunicationType)
+                var uniqueCommunicationTypes = api.column(7).data().unique().sort();
+                var communicationTypeOptions = \'<option value="" style="text-align:center;">Anruftyp</option>\';
+            
+                $.each(uniqueCommunicationTypes, function (index, value) {
+                    communicationTypeOptions += \'<option value="\' + value + \'">\' + value + \'</option>\';
+                });
+            
+                $("#selectCommunicationType-container").html(\'<select id="selectColumn7" class="form-select" >\' + communicationTypeOptions + \'</select>\');
+                $("#selectCommunicationType-container select").on("change", function() {
+                    var selectedValue = $(this).val();
+                    api.column(7).search(selectedValue).draw();
+                });
+            
                 // Set selected options based on current filters
                 var currentFilter0 = api.column(0).search();
                 $("#selectCustomer-container select").val(currentFilter0);
+            
                 var currentFilter6 = api.column(6).search();
                 $("#selectStatus-container select").val(currentFilter6);
-
+            
+                var currentFilter7 = api.column(7).search();
+                $("#selectCommunicationType-container select").val(currentFilter7);
+            
                 // Initialize the Date Range Picker here
                 var dateRangeInput = $("#daterange");
                 var dataTable = $("#daterange_table").DataTable(); // Select the DataTable by its ID
