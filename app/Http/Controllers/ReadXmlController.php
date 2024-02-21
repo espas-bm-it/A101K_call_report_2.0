@@ -24,24 +24,28 @@ class ReadXmlController extends Controller
                 $communicationType = isset($data['CommunicationType']) ? $this->getCommunicationType($data['CommunicationType']) : 'unknown';
                 $callDuration = isset($data['CallDuration']) ? $this->getCallDuration($data['CallDuration']) : 'unknown';
             
-                // Check for conditions to set CallStatus
+                // Check for conditions to set CallStatus and SubscriberName
                 if ($data['CommunicationType'] === 'FacilityRequest') {
                     // Calls with no DialledNumber, 00:00:00 CallDuration, 00:00:00 RingingDuration, and CommunicationType "FacilityRequest"
                     $callStatus = 'Facility Request';
+                    $subscriberName = empty($data['SubscriberName']) ? 'Facility Request' : $data['SubscriberName'];
                 } elseif ($data['CommunicationType'] === 'BreakIn') {
                     // Calls with 00:00:00 CallDuration, 00:00:00 RingingDuration, and CommunicationType "BreakIn"
                     $callStatus = 'Break In';
+                    $subscriberName = empty($data['SubscriberName']) ? 'Break In' : $data['SubscriberName'];
                 } elseif (!empty($data['SubscriberName']) && $data['CallDuration'] === '00:00:00' && $data['RingingDuration'] === '00:00:00' && !in_array($data['CommunicationType'], ['FacilityRequest', 'BreakIn'])) {
                     // Calls with SubscriberName, 00:00:00 CallDuration, 00:00:00 RingingDuration, and CommunicationType not "FacilityRequest" or "BreakIn"
                     $callStatus = 'Verpasst';
+                    $subscriberName = $data['SubscriberName'];
                 } else {
                     // All other cases
                     $callStatus = $callDuration;
+                    $subscriberName = isset($data['SubscriberName']) ? $data['SubscriberName'] : null;
                 }
             
                 // Create a new record in the database for each $data item
                 XmlData::create([
-                    "SubscriberName" => isset($data['SubscriberName']) ? $data['SubscriberName'] : null,
+                    "SubscriberName" => $subscriberName,
                     "DialledNumber" => isset($data['DialledNumber']) ? $data['DialledNumber'] : null,
                     "Date" => $data['Date'],
                     "Time" => $data['Time'],
