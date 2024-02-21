@@ -20,10 +20,25 @@ class ReadXmlController extends Controller
 
         if (isset($phpDataArray['CallAccounting']) && count($phpDataArray['CallAccounting']) > 0) {
             foreach ($phpDataArray['CallAccounting'] as $data) {
-                // Variable für die Filtrierung festsetzen und auf funktion verweisen
+                // Variable für die Filtrierung festsetzen und auf Funktion verweisen
                 $communicationType = isset($data['CommunicationType']) ? $this->getCommunicationType($data['CommunicationType']) : 'unknown';
                 $callDuration = isset($data['CallDuration']) ? $this->getCallDuration($data['CallDuration']) : 'unknown';
-
+            
+                // Check for conditions to set CallStatus
+                if ($data['CommunicationType'] === 'FacilityRequest') {
+                    // Calls with no DialledNumber, 00:00:00 CallDuration, 00:00:00 RingingDuration, and CommunicationType "FacilityRequest"
+                    $callStatus = 'Facility Request';
+                } elseif ($data['CommunicationType'] === 'BreakIn') {
+                    // Calls with 00:00:00 CallDuration, 00:00:00 RingingDuration, and CommunicationType "BreakIn"
+                    $callStatus = 'Break In';
+                } elseif (!empty($data['SubscriberName']) && $data['CallDuration'] === '00:00:00' && $data['RingingDuration'] === '00:00:00' && !in_array($data['CommunicationType'], ['FacilityRequest', 'BreakIn'])) {
+                    // Calls with SubscriberName, 00:00:00 CallDuration, 00:00:00 RingingDuration, and CommunicationType not "FacilityRequest" or "BreakIn"
+                    $callStatus = 'Verpasst';
+                } else {
+                    // All other cases
+                    $callStatus = $callDuration;
+                }
+            
                 // Create a new record in the database for each $data item
                 XmlData::create([
                     "SubscriberName" => isset($data['SubscriberName']) ? $data['SubscriberName'] : null,
@@ -32,7 +47,7 @@ class ReadXmlController extends Controller
                     "Time" => $data['Time'],
                     "RingingDuration" => $data['RingingDuration'],
                     "CallDuration" => $data['CallDuration'],
-                    "CallStatus" => $callDuration,
+                    "CallStatus" => $callStatus,
                     "CommunicationType" => $communicationType
                 ]);
             }
@@ -48,13 +63,13 @@ class ReadXmlController extends Controller
             $providedCommunicationType === 'OutgoingTransferTransit' ||
             $providedCommunicationType === 'OutgoingTransferPrivate' ||
             $providedCommunicationType === 'OutgoingTransit'){
-            return 'ausgehend';
+            return 'Ausgehend';
         }
         elseif ($providedCommunicationType === 'IncomingPrivate' ||
             $providedCommunicationType ===  'IncomingTransit' ||
             $providedCommunicationType ===  'IncomingTransferPrivate' ||
             $providedCommunicationType ===  'IncomingTransferTransit'){
-            return 'eingehend';
+            return 'Eingehend';
         }
         elseif($providedCommunicationType === 'BreakIn'){
             return 'BreakIn';
@@ -63,7 +78,7 @@ class ReadXmlController extends Controller
             return 'FacilityRequest';
         }
         else{
-            return 'unknown';
+            return 'Unbekannt';
         }
     }
 
