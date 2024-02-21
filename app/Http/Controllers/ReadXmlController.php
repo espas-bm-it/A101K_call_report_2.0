@@ -22,7 +22,7 @@ class ReadXmlController extends Controller
             foreach ($phpDataArray['CallAccounting'] as $data) {
                 // Variable für die Filtrierung festsetzen und auf Funktion verweisen
                 $communicationType = isset($data['CommunicationType']) ? $this->getCommunicationType($data['CommunicationType']) : 'unknown';
-                $callDuration = isset($data['CallDuration']) ? $this->getCallDuration($data['CallDuration']) : 'unknown';
+                $callDuration = isset($data['CallDuration']) ? $this->getCallDuration($data['CallDuration'], $communicationType) : 'unknown';
             
                 // Check for conditions to set CallStatus and SubscriberName
                 if ($data['CommunicationType'] === 'FacilityRequest') {
@@ -33,14 +33,18 @@ class ReadXmlController extends Controller
                     // Calls with 00:00:00 CallDuration, 00:00:00 RingingDuration, and CommunicationType "BreakIn"
                     $callStatus = 'Break In';
                     $subscriberName = empty($data['SubscriberName']) ? 'Break In' : $data['SubscriberName'];
-                } elseif ($data['CommunicationType'] === 'Ausgehend') {
-                    // Calls with CommunicationType "Ausgehend"
+                } elseif (in_array($data['CommunicationType'], ['OutgoingPrivate', 'OutgoingTransferTransit', 'OutgoingTransferPrivate', 'OutgoingTransit'])) {
+                    // Calls with CommunicationType "OutgoingPrivate", "OutgoingTransferTransit", "OutgoingTransferPrivate", "OutgoingTransit"
                     $callStatus = '-';
                     $subscriberName = isset($data['SubscriberName']) ? $data['SubscriberName'] : null;
-                } elseif (!empty($data['SubscriberName']) && $data['CallDuration'] === '00:00:00' && $data['RingingDuration'] === '00:00:00' && !in_array($data['CommunicationType'], ['FacilityRequest', 'BreakIn'])) {
-                    // Calls with SubscriberName, 00:00:00 CallDuration, 00:00:00 RingingDuration, and CommunicationType not "FacilityRequest" or "BreakIn"
+                } elseif (in_array($data['CommunicationType'], ['IncomingPrivate', 'IncomingTransit', 'IncomingTransferPrivate', 'IncomingTransferTransit']) && $data['CallDuration'] !== '00:00:00') {
+                    // Calls with CommunicationType "IncomingPrivate", "IncomingTransit", "IncomingTransferPrivate", "IncomingTransferTransit" and non-zero CallDuration
+                    $callStatus = 'Angenommen';
+                    $subscriberName = isset($data['SubscriberName']) ? $data['SubscriberName'] : null;
+                } elseif (in_array($data['CommunicationType'], ['IncomingPrivate', 'IncomingTransit', 'IncomingTransferPrivate', 'IncomingTransferTransit']) && $data['CallDuration'] === '00:00:00') {
+                    // Calls with  00:00:00 CallDuration,  and CommunicationType "IncomingPrivate", "IncomingTransit", "IncomingTransferPrivate", "IncomingTransferTransit
                     $callStatus = 'Verpasst';
-                    $subscriberName = $data['SubscriberName'];
+                    $subscriberName = isset($data['SubscriberName']) ? $data['SubscriberName'] : null;
                 } else {
                     // All other cases
                     $callStatus = $callDuration;
@@ -59,12 +63,15 @@ class ReadXmlController extends Controller
                     "CommunicationType" => $communicationType
                 ]);
             }
+            
 
             return response()->json(['message' => 'Data inserted successfully']);
         }
 
         return response()->json(['message' => 'No data found in XML file'], 400);
     }
+
+
     // funktion für die Filtrierung
     private function getCommunicationType($providedCommunicationType){
         if ($providedCommunicationType === 'OutgoingPrivate' ||
@@ -90,8 +97,11 @@ class ReadXmlController extends Controller
         }
     }
 
-    private function getCallDuration($providedCallDuration){
-        if ($providedCallDuration === '00:00:00'){
+    private function getCallDuration($providedCallDuration, $communicationType){
+        if ($providedCallDuration === '00:00:00' && $communicationType === 'Eingehend') {
+            return 'Angenommen';
+        }
+        elseif ($providedCallDuration === '00:00:00'){
             return 'verpasst';
         }
         else{
