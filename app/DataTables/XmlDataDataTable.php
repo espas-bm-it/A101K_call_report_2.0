@@ -33,7 +33,7 @@ class XmlDataDataTable extends DataTable
             }
         })
 
-        ->addColumn('SubscriberName', function ($model) {
+        ->editColumn('SubscriberName', function ($model) {
             // Display "Nicht registriert" if SubscriberName is null or empty
             return $model->SubscriberName ? $model->SubscriberName : 'Nicht registriert';
         })
