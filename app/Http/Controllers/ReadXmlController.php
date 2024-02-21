@@ -33,6 +33,10 @@ class ReadXmlController extends Controller
                     // Calls with 00:00:00 CallDuration, 00:00:00 RingingDuration, and CommunicationType "BreakIn"
                     $callStatus = 'Break In';
                     $subscriberName = empty($data['SubscriberName']) ? 'Break In' : $data['SubscriberName'];
+                } elseif ($data['CommunicationType'] === 'Ausgehend') {
+                    // Calls with CommunicationType "Ausgehend"
+                    $callStatus = '-';
+                    $subscriberName = isset($data['SubscriberName']) ? $data['SubscriberName'] : null;
                 } elseif (!empty($data['SubscriberName']) && $data['CallDuration'] === '00:00:00' && $data['RingingDuration'] === '00:00:00' && !in_array($data['CommunicationType'], ['FacilityRequest', 'BreakIn'])) {
                     // Calls with SubscriberName, 00:00:00 CallDuration, 00:00:00 RingingDuration, and CommunicationType not "FacilityRequest" or "BreakIn"
                     $callStatus = 'Verpasst';
