@@ -9,7 +9,7 @@
                 <div class="col col-3">
                     <!--DATE RANGE FILTER -->
                     <div id="daterange" class="float-end"
-                        style="background: #ffff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; text-align:center">
+                        style="background: #ffff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; border-radius: 5px; width: 100%; text-align:center">
                         <i class="fa fa-calendar"></i>&nbsp;
                         <span></span>
                         <i class="fa fa-caret-down"></i>
@@ -21,7 +21,7 @@
                 </div>
                 <div class="col col-3">
                     <!--        Div for the select status column     -->
-                    <div id="selectStatus-container"></div>
+                    <div id="selectStatus-container" ></div>
                 </div>
                 <div class="col col-3"> 
                     <!--        Div for the resset button     -->

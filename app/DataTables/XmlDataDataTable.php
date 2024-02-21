@@ -130,7 +130,7 @@ class XmlDataDataTable extends DataTable
     }
 
     // Update select for column 0 (SubscriberName)
-    $subscriberNameOptions = '<option value="">Nach Kund filtern</option>' . $subscriberNameOptions;
+    $subscriberNameOptions = '<option value="" style="text-align:center;" >Kunde</option>' . $subscriberNameOptions;
 
     // Getting unique CallStatus values for column 6
     $uniqueCallStatuses = XmlData::pluck('CallStatus')->unique()->values()->toArray();
@@ -144,7 +144,7 @@ class XmlDataDataTable extends DataTable
     }
 
     // Add "Filter auflösen" option as the first option
-    $callStatusOptions = '<option value="">Nach Anrufstatus filtern</option>' . $callStatusOptions;
+    $callStatusOptions = '<option value="" style="text-align:center;">Anrufstatus</option>' . $callStatusOptions;
 
     return $this->builder()
         ->columns($this->getColumns())
@@ -163,14 +163,14 @@ class XmlDataDataTable extends DataTable
                 var api = this.api();
 
                 // Update select filters for column 0 (SubscriberName)
-                $("#selectCustomer-container").html(\'<select id="selectColumn0" class="form-select">' . $subscriberNameOptions . '</select>\');
+                $("#selectCustomer-container").html(\'<select id="selectColumn0" class="form-select" >' . $subscriberNameOptions . '</select>\');
                 $("#selectCustomer-container select").on("change", function() {
                     var selectedValue = $(this).val();
                     api.column(0).search(selectedValue).draw();
                 });
 
                 // Update select filters for column 6 (CallStatus)
-                $("#selectStatus-container").html(\'<select id="selectColumn6" class="form-select">' . $callStatusOptions . '</select>\');
+                $("#selectStatus-container").html(\'<select id="selectColumn6" class="form-select" >' . $callStatusOptions . '</select>\');
                 $("#selectStatus-container select").on("change", function() {
                     var selectedValue = $(this).val();
                     api.column(6).search(selectedValue).draw();
@@ -187,7 +187,7 @@ class XmlDataDataTable extends DataTable
                 var dataTable = $("#daterange_table").DataTable(); // Select the DataTable by its ID
             
                 // Set the default message
-                dateRangeInput.html("Datumsbereich auswählen");
+                dateRangeInput.html("Datumsbereich");
             
                 dateRangeInput.daterangepicker({
                     opens: "left",
