@@ -17,93 +17,90 @@ class XmlDataDataTable extends DataTable
      * @param QueryBuilder $query Results from query() method.
      */
     public function dataTable($query)
-{
-    return datatables()
-        ->eloquent($query)
-        ->addColumn('formatted_date', function ($model) {
-            // Check if the 'Date' property exists and is not null
-            if (isset($model->Date)) {
-                // Format the 'Date' property as 'formatted_date'
-                $formattedDate = Carbon::parse($model->Date)->isoFormat('DD.MM.YYYY');
-                
-            } else {
-                // Log if the 'Date' property is missing or null
-                \Illuminate\Support\Facades\Log::info("Date property is missing or null");
-                return null; // Or any fallback value you prefer
-            }
-        })
-
-        ->editColumn('SubscriberName', function ($model) {
-            // Display "Nicht registriert" if SubscriberName is null or empty
-            return $model->SubscriberName ? $model->SubscriberName : 'Nicht registriert';
-        })
-
-        ->filterColumn('formatted_date', function ($query, $keyword) {
-            $dates = explode('|', $keyword);
-        
-            // Check if the input consists of two date values
-            if (count($dates) == 2) {
-                $startDate = Carbon::createFromFormat('d-m-Y', $dates[0])->startOfDay();
-                $endDate = Carbon::createFromFormat('d-m-Y', $dates[1])->endOfDay();
-                
-                // Only apply the date range filter if both dates are valid
-                if ($startDate && $endDate) {
-                    $query->whereBetween('Date', [$startDate, $endDate]);
-                }
-            }
-        })
-
-        ->editColumn('formatted_date', function ($model) {
-            return Carbon::parse($model->Date)->isoFormat('DD.MM.YYYY');
-            
-        })
-        
-        ->rawColumns(['formatted_date'])
-        ->orderColumn('formatted_date', function ($query, $order) {
-            // Sort the query based on the 'Date' column
-            $query->orderBy('Date', $order);
-            
-        })
-        
-        ->editColumn('DialledNumber', function ($model) {
-            $phoneNumber = $model->DialledNumber;
-
-            $countryCodes = [
-                '41' => 'Schweiz',
-                '44' => 'Großbritannien',
-                // Weitere Ländercodes hier hinzufügen...
-            ];
-
-            $countryCode = substr($phoneNumber, 0, 2);
-
-            if (isset($countryCodes[$countryCode])) {
-                $formattedNumber = '+' . $countryCode . ' ';
-
-                switch ($countryCode) {
-                    case '41': // Schweiz
-                        $formattedNumber .= substr($phoneNumber, 2, 2) . ' ' . substr($phoneNumber, 4, 3) . ' ' . substr($phoneNumber, 7, 2) . ' ' . substr($phoneNumber, 9, 2);
-                        break;
-                    case '44': // Großbritannien
-                        $formattedNumber .= substr($phoneNumber, 2, 4) . ' ' . substr($phoneNumber, 6, 4) . ' ' . substr($phoneNumber, 10, 2) . ' ' . substr($phoneNumber, 12, 2);
-                        break;
-                    // Weitere Ländercodes hier hinzufügen...
-                    default:
-                        $formattedNumber .= substr($phoneNumber, 2);
-                        break;
-                }
-            } else {
-                if (strlen($phoneNumber) == 10) {
-                    $formattedNumber = '+41 ' . substr($phoneNumber, 1, 2) . ' ' . substr($phoneNumber, 3, 3) . ' ' . substr($phoneNumber, 6, 2) . ' ' . substr($phoneNumber, 8, 2);
-                } elseif (strlen($phoneNumber) == 11) {
-                    $formattedNumber = '+' . substr($phoneNumber, 0, 2) . ' ' . substr($phoneNumber, 2, 2) . ' ' . substr($phoneNumber, 4, 3) . ' ' . substr($phoneNumber, 7, 2) . ' ' . substr($phoneNumber, 9, 2);
+    {
+        return datatables()
+            ->eloquent($query)
+            ->addColumn('formatted_date', function ($model) {
+                // Check if the 'Date' property exists and is not null
+                if (isset($model->Date)) {
+                    // Format the 'Date' property as 'formatted_date'
+                    $formattedDate = Carbon::parse($model->Date)->isoFormat('DD.MM.YYYY');
                 } else {
-                    $formattedNumber = $phoneNumber;
+                    // Log if the 'Date' property is missing or null
+                    \Illuminate\Support\Facades\Log::info("Date property is missing or null");
+                    return null; // Or any fallback value you prefer
                 }
-            }
+            })
 
-            return $formattedNumber;
-        });
-}
+            ->editColumn('SubscriberName', function ($model) {
+                // Display "Nicht registriert" if SubscriberName is null or empty
+                return $model->SubscriberName ? $model->SubscriberName : 'Nicht registriert';
+            })
+
+            ->filterColumn('formatted_date', function ($query, $keyword) {
+                $dates = explode('|', $keyword);
+
+                // Check if the input consists of two date values
+                if (count($dates) == 2) {
+                    $startDate = Carbon::createFromFormat('d-m-Y', $dates[0])->startOfDay();
+                    $endDate = Carbon::createFromFormat('d-m-Y', $dates[1])->endOfDay();
+
+                    // Only apply the date range filter if both dates are valid
+                    if ($startDate && $endDate) {
+                        $query->whereBetween('Date', [$startDate, $endDate]);
+                    }
+                }
+            })
+
+            ->editColumn('formatted_date', function ($model) {
+                return Carbon::parse($model->Date)->isoFormat('DD.MM.YYYY');
+            })
+
+            ->rawColumns(['formatted_date'])
+            ->orderColumn('formatted_date', function ($query, $order) {
+                // Sort the query based on the 'Date' column
+                $query->orderBy('Date', $order);
+            })
+
+            ->editColumn('DialledNumber', function ($model) {
+                $phoneNumber = $model->DialledNumber;
+
+                $countryCodes = [
+                    '41' => 'Schweiz',
+                    '44' => 'Großbritannien',
+                    // Weitere Ländercodes hier hinzufügen...
+                ];
+
+                $countryCode = substr($phoneNumber, 0, 2);
+
+                if (isset($countryCodes[$countryCode])) {
+                    $formattedNumber = '+' . $countryCode . ' ';
+
+                    switch ($countryCode) {
+                        case '41': // Schweiz
+                            $formattedNumber .= substr($phoneNumber, 2, 2) . ' ' . substr($phoneNumber, 4, 3) . ' ' . substr($phoneNumber, 7, 2) . ' ' . substr($phoneNumber, 9, 2);
+                            break;
+                        case '44': // Großbritannien
+                            $formattedNumber .= substr($phoneNumber, 2, 4) . ' ' . substr($phoneNumber, 6, 4) . ' ' . substr($phoneNumber, 10, 2) . ' ' . substr($phoneNumber, 12, 2);
+                            break;
+                            // Weitere Ländercodes hier hinzufügen...
+                        default:
+                            $formattedNumber .= substr($phoneNumber, 2);
+                            break;
+                    }
+                } else {
+                    if (strlen($phoneNumber) == 10) {
+                        $formattedNumber = '+41 ' . substr($phoneNumber, 1, 2) . ' ' . substr($phoneNumber, 3, 3) . ' ' . substr($phoneNumber, 6, 2) . ' ' . substr($phoneNumber, 8, 2);
+                    } elseif (strlen($phoneNumber) == 11) {
+                        $formattedNumber = '+' . substr($phoneNumber, 0, 2) . ' ' . substr($phoneNumber, 2, 2) . ' ' . substr($phoneNumber, 4, 3) . ' ' . substr($phoneNumber, 7, 2) . ' ' . substr($phoneNumber, 9, 2);
+                    } else {
+                        $formattedNumber = $phoneNumber;
+                    }
+                }
+
+                return $formattedNumber;
+            });
+    }
 
     /**
      * Get the query source of dataTable.
@@ -117,49 +114,59 @@ class XmlDataDataTable extends DataTable
      * Optional method if you want to use the html builder.
      */
     public function html(): HtmlBuilder
-{
-    // Getting unique SubscriberName values for customer selection
-    $uniqueSubscriberNames = XmlData::pluck('SubscriberName')->unique()->values()->toArray();
+    {
+        // Getting unique SubscriberName values for customer selection
+        $uniqueSubscriberNames = XmlData::pluck('SubscriberName')->unique()->values()->toArray();
 
-    // Sort the array alphabetically
-    sort($uniqueSubscriberNames);
+        // Sort the array alphabetically
+        sort($uniqueSubscriberNames);
 
-    $subscriberNameOptions = ''; // Default option
-    foreach ($uniqueSubscriberNames as $subscriberName) {
-        $subscriberNameOptions .= '<option value="' . $subscriberName . '">' . $subscriberName . '</option>';
-    }
+        $subscriberNameOptions = ''; // Default option
+        foreach ($uniqueSubscriberNames as $subscriberName) {
+            $subscriberNameOptions .= '<option value="' . $subscriberName . '">' . $subscriberName . '</option>';
+        }
 
-    // Update select for column 0 (SubscriberName)
-    $subscriberNameOptions = '<option value="" style="text-align:center;" >Kunde</option>' . $subscriberNameOptions;
+        // Update select for column 0 (SubscriberName)
+        $subscriberNameOptions = '<option value="" style="text-align:center;" >Kunde</option>' . $subscriberNameOptions;
 
-    // Getting unique CallStatus values for column 6
-    $uniqueCallStatuses = XmlData::pluck('CallStatus')->unique()->values()->toArray();
+        // Getting unique CallStatus values for column 6
+        $uniqueCallStatuses = XmlData::pluck('CallStatus')->unique()->values()->toArray();
 
-     // Sort the array alphabetically
-     sort($uniqueCallStatuses);
+        // Sort the array alphabetically
+        sort($uniqueCallStatuses);
 
-    $callStatusOptions = ''; // Default option
-    foreach ($uniqueCallStatuses as $callStatus) {
-        $callStatusOptions .= '<option value="' . $callStatus . '">' . $callStatus . '</option>';
-    }
+        $callStatusOptions = ''; // Default option
+        foreach ($uniqueCallStatuses as $callStatus) {
+            $callStatusOptions .= '<option value="' . $callStatus . '">' . $callStatus . '</option>';
+        }
 
-    // Add "Filter auflösen" option as the first option
-    $callStatusOptions = '<option value="" style="text-align:center;">Anrufstatus</option>' . $callStatusOptions;
+        // Add "Filter auflösen" option as the first option
+        $callStatusOptions = '<option value="" style="text-align:center;">Anrufstatus</option>' . $callStatusOptions;
 
-    return $this->builder()
-        ->columns($this->getColumns())
-        ->minifiedAjax()
-        ->orderBy(2)
-        ->selectStyleSingle()
-        ->parameters([
-            'columnDefs' => [
-                ['orderable' => true, 'targets' => [2]], // Specify the index of your custom column
-            ],
-            'language' => [
-                'url' => asset('lang/DE_CH.json') // URL to the language file
-            ],
-            'retrieve' => true, // Add the retrieve: true option
-            'initComplete' => 'function(settings, json) {
+        return $this->builder()
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->orderBy(2)
+            ->responsive(true)
+            ->selectStyleSingle()
+            ->parameters([
+                'columnDefs' => [
+                    ['orderable' => true, 'targets' => [2]], // Specify the index of your custom column
+
+                   /* ['width' => '10%', 'targets' => [0]],  
+                    ['width' => '10%', 'targets' => [1]],  
+                    ['width' => '10%', 'targets' => [2]],  
+                    ['width' => '10%', 'targets' => [3]], 
+                    ['width' => '10%', 'targets' => [4]], 
+                    ['width' => '10%', 'targets' => [5]], 
+                    ['width' => '10%', 'targets' => [6]], 
+                    ['width' => '10%', 'targets' => [7]], */
+                ],
+                'language' => [
+                    'url' => asset('lang/DE_CH.json') // URL to the language file
+                ],
+                'retrieve' => true, // Add the retrieve: true option
+                'initComplete' => 'function(settings, json) {
                 var api = this.api();
             
                 // Update select filters for column 0 (SubscriberName)
@@ -224,16 +231,16 @@ class XmlDataDataTable extends DataTable
                     dataTable.column(2).search(startDate + "|" + endDate, true, false).draw(); // Search and draw for the date range
                 });
             }',
-        ])
-        ->buttons([
-            Button::make('excel'),
-            Button::make('csv'),
-            Button::make('pdf'),
-            Button::make('print'),
-            Button::make('reset'),
-            Button::make('reload')
-        ]);
-}
+            ])
+            ->buttons([
+                Button::make('excel'),
+                Button::make('csv'),
+                Button::make('pdf'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload')
+            ]);
+    }
 
 
     /**
@@ -242,14 +249,14 @@ class XmlDataDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'SubscriberName'=> ['title' => 'Kunde'],
-            'DialledNumber'=> ['title' => 'Telefonnummer'],
-            'formatted_date'=> ['title' => 'Datum'],
-            'Time'=> ['title' => 'Uhrzeit'],
-            'RingingDuration'=> ['title' => 'Klingeldauer'],
-            'CallDuration'=> ['title' => 'Anrufdauer'],
-            'CallStatus'=> ['title' => 'Anrufstatus'],
-            'CommunicationType'=> ['title' => 'Anruftyp'],
+            'SubscriberName' => ['title' => 'Kunde'],
+            'DialledNumber' => ['title' => 'Telefonnummer'],
+            'formatted_date' => ['title' => 'Datum'],
+            'Time' => ['title' => 'Uhrzeit'],
+            'RingingDuration' => ['title' => 'Klingeldauer'],
+            'CallDuration' => ['title' => 'Anrufdauer'],
+            'CallStatus' => ['title' => 'Anrufstatus'],
+            'CommunicationType' => ['title' => 'Anruftyp'],
         ];
     }
 
