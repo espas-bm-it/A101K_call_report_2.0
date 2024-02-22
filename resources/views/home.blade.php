@@ -3,9 +3,9 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <div class="col col-9">
-
+            <div class="col col-12">
                 <div class="row">
+
                     <div class="col col-2">
                         <!--DATE RANGE FILTER -->
                         <div id="daterange" class="float-end"
@@ -15,10 +15,12 @@
                             <i class="fa fa-caret-down"></i>
                         </div>
                     </div>
+
                     <div class="col col-2">
                         <!--        Div for the select customer column       -->
                         <div id="selectCustomer-container"></div>
                     </div>
+
                     <div class="col col-2">
                         <!--        Div for the select status column     -->
                         <div id="selectStatus-container"></div>
@@ -27,6 +29,11 @@
                     <div class="col col-2">
                         <!-- Div for the select communicationType column -->
                         <div id="selectCommunicationType-container"></div>
+                    </div>
+
+                    <div class="col col-2">
+                        <!-- Div for the select communicationType column -->
+                        <div id=""></div>
                     </div>
 
                     <div class="col col-2">
@@ -41,15 +48,16 @@
 
 
                 <!-- NEW COLUMN
-                <div class="row">
-                    <div class="col col-3">
+                        <div class="row">
+                            <div class="col col-2">
+                            </div>
 
-                </div>  -->
+                        </div>  -->
 
             </div>
 
-            <div class="card-body">
-                {!! $dataTable->table(['class' => 'table table-bordered', 'id' => 'daterange_table']) !!}
+            <div class="card-body table-responsive">
+                {!! $dataTable->table(['class' => 'table table-bordered  table-responsive', 'id' => 'daterange_table']) !!}
             </div>
         </div>
     </div>
