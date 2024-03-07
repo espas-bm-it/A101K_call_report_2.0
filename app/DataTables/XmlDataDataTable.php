@@ -24,7 +24,7 @@ class XmlDataDataTable extends DataTable
                 // Check if the 'Date' property exists and is not null
                 if (isset($model->Date)) {
                     // Format the 'Date' property as 'formatted_date'
-                    $formattedDate = Carbon::parse($model->Date)->isoFormat('DD.MM.YYYY');
+                    return Carbon::parse($model->Date)->isoFormat('DD.MM.YYYY');
                 } else {
                     // Log if the 'Date' property is missing or null
                     \Illuminate\Support\Facades\Log::info("Date property is missing or null");
@@ -59,7 +59,7 @@ class XmlDataDataTable extends DataTable
             ->rawColumns(['formatted_date'])
             ->orderColumn('formatted_date', function ($query, $order) {
                 // Sort the query based on the 'Date' column
-                $query->orderBy('Date', $order);
+                $query->orderBy('Date', $order)->orderBy('Time',$order);
             })
 
             ->editColumn('DialledNumber', function ($model) {
