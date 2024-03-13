@@ -16,6 +16,7 @@
                         </div>
                     </div>
 
+
                     <div class="col col-2">
                         <!--        Div for the select customer column       -->
                         <div id="selectCustomer-container"></div>
@@ -44,6 +45,22 @@
                         </div>
 
                     </div>
+                    </div>
+            <div class="row">
+                <div class="col col-3">
+                    <!--        Div for the chart button     -->
+                    <div id="barChart-btn" class="float-end"
+                        style="background: #E7BDBB; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; text-align:center">
+                        chart
+                    </div>
+                </div>
+                <div class="col col-3">
+                    <!--        Div for the chart button     -->
+                    <div id="ajaxSee" class="float-end"
+                        style="background: #E7BDBB; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; text-align:center">
+                        ajax
+                    </div>
+
                 </div>
 
 
@@ -61,6 +78,11 @@
             </div>
         </div>
     </div>
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
+
+
 @endsection
 
 
