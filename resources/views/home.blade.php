@@ -24,7 +24,7 @@
                     <div id="selectStatus-container" ></div>
                 </div>
                 <div class="col col-3"> 
-                    <!--        Div for the resset button     -->
+                    <!--        Div for the reset button     -->
                     <div id="reset-btn" class="float-end"
                         style="background: #E7BDBB; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; text-align:center">
                         Zurücksetzen
@@ -34,7 +34,18 @@
             </div>
             <div class="row">
                 <div class="col col-3">
-                    
+                    <!--        Div for the chart button     -->
+                    <div id="barChart-btn" class="float-end"
+                        style="background: #E7BDBB; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; text-align:center">
+                        chart
+                    </div>
+                </div>
+                <div class="col col-3">
+                    <!--        Div for the chart button     -->
+                    <div id="ajaxSee" class="float-end"
+                        style="background: #E7BDBB; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; text-align:center">
+                        ajax
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -42,6 +53,11 @@
             </div>
         </div>
     </div>
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
+
+
 @endsection
 
 

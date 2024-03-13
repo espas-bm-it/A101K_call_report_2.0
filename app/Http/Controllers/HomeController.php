@@ -24,7 +24,9 @@ class HomeController extends Controller
 
     public function datatables(XmlDataDataTable $dataTable)
     {
+        
         return $dataTable->ajax();
+
     }
 
 
