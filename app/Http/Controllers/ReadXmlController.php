@@ -20,41 +20,71 @@ class ReadXmlController extends Controller
 
         if (isset($phpDataArray['CallAccounting']) && count($phpDataArray['CallAccounting']) > 0) {
             foreach ($phpDataArray['CallAccounting'] as $data) {
-                // Variable für die Filtrierung festsetzen und auf funktion verweisen
+                // Variable für die Filtrierung festsetzen und auf Funktion verweisen
                 $communicationType = isset($data['CommunicationType']) ? $this->getCommunicationType($data['CommunicationType']) : 'unknown';
-                $callDuration = isset($data['CallDuration']) ? $this->getCallDuration($data['CallDuration']) : 'unknown';
-
+                $callDuration = isset($data['CallDuration']) ? $this->getCallDuration($data['CallDuration'], $communicationType) : 'unknown';
+            
+                // Check for conditions to set CallStatus and SubscriberName
+                if ($data['CommunicationType'] === 'FacilityRequest') {
+                    // Calls with no DialledNumber, 00:00:00 CallDuration, 00:00:00 RingingDuration, and CommunicationType "FacilityRequest"
+                    $callStatus = '-';
+                    $subscriberName = empty($data['SubscriberName']) ? '-' : $data['SubscriberName'];
+                } elseif ($data['CommunicationType'] === 'BreakIn') {
+                    // Calls with 00:00:00 CallDuration, 00:00:00 RingingDuration, and CommunicationType "BreakIn"
+                    $callStatus = '-';
+                    $subscriberName = empty($data['SubscriberName']) ? '-' : $data['SubscriberName'];
+                } elseif (in_array($data['CommunicationType'], ['OutgoingPrivate', 'OutgoingTransferTransit', 'OutgoingTransferPrivate', 'OutgoingTransit'])) {
+                    // Calls with CommunicationType "OutgoingPrivate", "OutgoingTransferTransit", "OutgoingTransferPrivate", "OutgoingTransit"
+                    $callStatus = '-';
+                    $subscriberName = isset($data['SubscriberName']) ? $data['SubscriberName'] : null;
+                } elseif (in_array($data['CommunicationType'], ['IncomingPrivate', 'IncomingTransit', 'IncomingTransferPrivate', 'IncomingTransferTransit']) && $data['CallDuration'] !== '00:00:00') {
+                    // Calls with CommunicationType "IncomingPrivate", "IncomingTransit", "IncomingTransferPrivate", "IncomingTransferTransit" and non-zero CallDuration
+                    $callStatus = 'Angenommen';
+                    $subscriberName = isset($data['SubscriberName']) ? $data['SubscriberName'] : null;
+                } elseif (in_array($data['CommunicationType'], ['IncomingPrivate', 'IncomingTransit', 'IncomingTransferPrivate', 'IncomingTransferTransit']) && $data['CallDuration'] === '00:00:00') {
+                    // Calls with  00:00:00 CallDuration,  and CommunicationType "IncomingPrivate", "IncomingTransit", "IncomingTransferPrivate", "IncomingTransferTransit
+                    $callStatus = 'Verpasst';
+                    $subscriberName = isset($data['SubscriberName']) ? $data['SubscriberName'] : null;
+                } else {
+                    // All other cases
+                    $callStatus = $callDuration;
+                    $subscriberName = isset($data['SubscriberName']) ? $data['SubscriberName'] : null;
+                }
+            
                 // Create a new record in the database for each $data item
                 XmlData::create([
-                    "SubscriberName" => isset($data['SubscriberName']) ? $data['SubscriberName'] : null,
+                    "SubscriberName" => $subscriberName,
                     "DialledNumber" => isset($data['DialledNumber']) ? $data['DialledNumber'] : null,
                     "Date" => $data['Date'],
                     "Time" => $data['Time'],
                     "RingingDuration" => $data['RingingDuration'],
                     "CallDuration" => $data['CallDuration'],
-                    "CallStatus" => $callDuration,
+                    "CallStatus" => $callStatus,
                     "CommunicationType" => $communicationType
                 ]);
             }
+            
 
             return response()->json(['message' => 'Data inserted successfully']);
         }
 
         return response()->json(['message' => 'No data found in XML file'], 400);
     }
+
+
     // funktion für die Filtrierung
     private function getCommunicationType($providedCommunicationType){
         if ($providedCommunicationType === 'OutgoingPrivate' ||
             $providedCommunicationType === 'OutgoingTransferTransit' ||
             $providedCommunicationType === 'OutgoingTransferPrivate' ||
             $providedCommunicationType === 'OutgoingTransit'){
-            return 'ausgehend';
+            return 'Ausgehend';
         }
         elseif ($providedCommunicationType === 'IncomingPrivate' ||
             $providedCommunicationType ===  'IncomingTransit' ||
             $providedCommunicationType ===  'IncomingTransferPrivate' ||
             $providedCommunicationType ===  'IncomingTransferTransit'){
-            return 'eingehend';
+            return 'Eingehend';
         }
         elseif($providedCommunicationType === 'BreakIn'){
             return 'BreakIn';
@@ -63,12 +93,15 @@ class ReadXmlController extends Controller
             return 'FacilityRequest';
         }
         else{
-            return 'unknown';
+            return 'Unbekannt';
         }
     }
 
-    private function getCallDuration($providedCallDuration){
-        if ($providedCallDuration === '00:00:00'){
+    private function getCallDuration($providedCallDuration, $communicationType){
+        if ($providedCallDuration === '00:00:00' && $communicationType === 'Eingehend') {
+            return 'Angenommen';
+        }
+        elseif ($providedCallDuration === '00:00:00'){
             return 'verpasst';
         }
         else{
