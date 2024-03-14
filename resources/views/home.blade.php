@@ -49,18 +49,10 @@
             <div class="row">
                 
                 <div class="col col-3">
-                    <!--        Div for the chart button     -->
-                    <div id="barChartButton" class="float-end"
-                        style="background: #E7BDBB; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; text-align:center">
-                        Barchart
-                    </div>
-                </div>
-
-                <div class="col col-3">
-                    <!--        Div for the chart button     -->
-                    <div id="pieChartButton" class="float-end"
-                        style="background: #E7BDBB; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; text-align:center">
-                        Piechart
+                    <!--        Div for the graphics button     -->
+                    <div id="graphicalDisplay" class="float-end"
+                    style="background: #ffff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; border-radius: 5px; width: 100%; text-align:center; margin: 5px;">
+                        graphishe Darstellung
                     </div>
                 </div>
 
@@ -78,11 +70,24 @@
             </div>
         </div>
     </div>
-    <div style="overflow: hidden">
-        <canvas id="myBarChart" style="display: none;"></canvas>
-    </div>
-    <div style="overflow: hidden">
-        <canvas id="myPieChart" style="display: none;"></canvas>
+    <div class="col col-12">
+        <div class="row">
+            <div class="col col-6">
+                <div style="overflow: hidden">
+                    <canvas id="myBarChart" style="display: none;"></canvas>
+                </div>
+            </div>
+            <div class="col col-3">
+                <div style="overflow: hidden">
+                    <canvas id="myPieChart" style="display: none;"></canvas>
+                </div>
+            </div>
+            <div class="col col-3">
+                <div style="overflow: hidden">
+                    <p id="serviceRating" style="display: none;"></p>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
