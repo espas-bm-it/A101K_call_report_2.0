@@ -12,16 +12,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-document.addEventListener('DOMContentLoaded', function(){
-  var chartCounter = 0;
-  var myChart = null;
-  
+document.addEventListener('DOMContentLoaded', function(){  
+  let myChart = null;
   document.getElementById('ajaxSee').addEventListener('click', function(){
     // Initialize the chart once when the button is clicked
     let dataTable = $("#daterange_table").DataTable();
-    let ctx = document.getElementById('myChart').getContext('2d');
+    let ctx = document.getElementById('myChart').getContext('2d');    
     
-    console.log('Updating chart...');
     let ajaxParams = dataTable.ajax.params();
     ajaxParams.length = -1;
 
@@ -40,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function(){
     });
 
     function updateUI(response) {
-      console.log('Updating UI with response:', response);
+      
       let countAngenommen = 0;
       let countNotAngenommen = 0;
 
@@ -51,11 +48,17 @@ document.addEventListener('DOMContentLoaded', function(){
           countNotAngenommen++;
         }
       });
+      
+      // show canvas display 
+      let canvasElement = document.getElementById("myChart");
+      canvasElement.style.display = "";
 
-      // Destroy the existing chart instance if it exists
+      // Update the existing chart instance if it exists
       if (myChart) {
-        myChart.destroy();
-      }
+        myChart.data.datasets[0].data = [countAngenommen, countNotAngenommen];
+        myChart.update();
+        
+      } else{
 
       // Create the chart
       myChart = new Chart(ctx, {
@@ -78,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function(){
           }
         }
       });
+    }
     }
   });
 });
