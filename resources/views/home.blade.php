@@ -50,13 +50,19 @@
                 
                 <div class="col col-3">
                     <!--        Div for the chart button     -->
-                    <div id="ajaxSee" class="float-end"
+                    <div id="barChartButton" class="float-end"
                         style="background: #E7BDBB; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; text-align:center">
                         Barchart
                     </div>
-
                 </div>
 
+                <div class="col col-3">
+                    <!--        Div for the chart button     -->
+                    <div id="pieChartButton" class="float-end"
+                        style="background: #E7BDBB; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; text-align:center">
+                        Piechart
+                    </div>
+                </div>
 
                 <!-- NEW COLUMN
                         <div class="row">
@@ -73,9 +79,11 @@
         </div>
     </div>
     <div style="overflow: hidden">
-        <canvas id="myChart" style="width: 0; height: 0; padding: 0; margin: 0; display: none;"></canvas>
+        <canvas id="myBarChart" style="display: none;"></canvas>
     </div>
-    
+    <div style="overflow: hidden">
+        <canvas id="myPieChart" style="display: none;"></canvas>
+    </div>
 @endsection
 
 
