@@ -54,12 +54,12 @@ document.addEventListener('DOMContentLoaded', function(){
       let countNotAngenommen = 0;
       
       response.data.forEach(function(item) {
-        if (item.CallStatus === "angenommen") {
-          countAngenommen++;
-        } else {
-          countNotAngenommen++;
-        }
-      });
+                if (item.CallStatus === "Angenommen" || (item.CallStatus === "-" && item.CallDuration != "00:00:00")) {
+                  countAngenommen++;
+                } else {
+                  countNotAngenommen++;
+                }
+              });
       
       // Logic for service evaluation
       let serviceRating = 100 / ((countAngenommen + countNotAngenommen) / countAngenommen);
@@ -110,18 +110,18 @@ document.addEventListener('DOMContentLoaded', function(){
       let belowTen = 0;
 
       response.data.forEach(function(item) {
-        if ( item.CallStatus == "verpasst") {
-          unanswered++;
-        } else if (stringToNumber(item.RingingDuration) > 30 && item.CallStatus == "angenommen") {
-          aboveThirty++;
-        } else if (stringToNumber(item.RingingDuration) < 10 && item.CallStatus == "angenommen"){
-          belowTen++;
-        } else if (stringToNumber(item.RingingDuration) < 20 && item.CallStatus == "angenommen"){
-          belowTwenty++;
-        } else if (stringToNumber(item.RingingDuration) < 30 && item.CallStatus == "angenommen"){
-          belowThirty++;
-        } 
-      });
+                if ( item.CallStatus == "Verpasst" || (item.CallStatus === "-" && item.CallDuration == "00:00:00")) {
+                  unanswered++;
+                } else if (stringToNumber(item.RingingDuration) > 30 && item.CallStatus == "Angenommen") {
+                  aboveThirty++;
+                } else if (stringToNumber(item.RingingDuration) < 10 && item.CallStatus == "Angenommen"){
+                  belowTen++;
+                } else if (stringToNumber(item.RingingDuration) < 20 && item.CallStatus == "Angenommen"){
+                  belowTwenty++;
+                } else if (stringToNumber(item.RingingDuration) < 30 && item.CallStatus == "Angenommen"){
+                  belowThirty++;
+                } 
+              });
 
       let canvasElement = document.getElementById("myPieChart");
       canvasElement.style.display = "";
