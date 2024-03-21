@@ -1,14 +1,42 @@
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('reset-btn').addEventListener('click', function() {
         console.log('Clicked on resetFilters');
+
+        
         // Clear all column filters
         let table = $('#daterange_table').DataTable();
         table.columns().search('').draw();
+        table.search('').draw();
+
+        
 
         // Resetting filters
         $("#selectColumn0").val('');
         $("#selectColumn6").val('');
-        $("#daterange").html('Datumsbereich auswählen');
+        $("#selectColumn7").val('');
+        $("#daterange").html('Datumsbereich');
+
+        
+        // Resetting manual search
+        let daterangeTableFilter = document.getElementById("daterange_table_filter");
+        if (daterangeTableFilter) {
+            let inputElement = daterangeTableFilter.querySelector("label input");
+            if (inputElement) {
+                inputElement.value = '';
+            }
+          }
+
+        
+
+        // Hide charts & servicerating
+        let canvasElementBar = document.getElementById("myBarChart");
+        let canvasElementPie = document.getElementById("myPieChart");
+        let canvasElementOutgoing = document.getElementById("outgoingChart");
+        canvasElementBar.style.display = "none";
+        canvasElementPie.style.display = "none";
+        canvasElementOutgoing.style.display = "none";
+        let serviceRatingElement = document.getElementById("serviceRating")
+        serviceRatingElement.style.display = "none";
     });
 });
 
