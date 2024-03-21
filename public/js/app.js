@@ -16,12 +16,14 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function(){  
   let myBarChart;
   let myPieChart;
+  let outgoingChart;
 
   document.getElementById('graphicalDisplay').addEventListener('click', function(){
     // Initialize the charts once the button is clicked
     let dataTable = $("#daterange_table").DataTable();
     let ctxBar = document.getElementById('myBarChart').getContext('2d');    
     let ctxPie = document.getElementById('myPieChart').getContext('2d');
+    let ctxOutgoing = document.getElementById('outgoingChart').getContext('2d');
     let ajaxParams = dataTable.ajax.params();
     ajaxParams.length = -1;
 
@@ -34,14 +36,15 @@ document.addEventListener('DOMContentLoaded', function(){
         // Update the chart with the new data
         updateUIBarChart(response);
         updateUIPieChart(response);
+        updateOutgoingChart(response);
       },
       error: function(xhr, status, error) {
         console.error('Error:', error);
       }
     });
 
-    // Function to convert item.RingingDuration to a usable number
-    function stringToNumber(timeString){
+      // Function to convert item.RingingDuration to a usable number
+      function stringToNumber(timeString){
       // Split the string into usable parts
       let parts = timeString.split(":");
       // Multiplication to represent the split unit of time correctly
@@ -64,23 +67,35 @@ document.addEventListener('DOMContentLoaded', function(){
       // Logic for service evaluation
       let serviceRating = 100 / ((countAngenommen + countNotAngenommen) / countAngenommen);
       let serviceRatingElement = document.getElementById("serviceRating")
-      serviceRatingElement.style.display = "";
-      serviceRatingElement.innerHTML = "Erreichbarkeit: " + parseInt( serviceRating ) + "%";
+      
+      // Get HTML element and set display to show/hide element
+      serviceRatingElement.innerHTML = "Service Level: " + parseInt( serviceRating ) + "%";
 
-
+      // Get canvas element and set display later to show/hide element
       let canvasElement = document.getElementById("myBarChart");
-      canvasElement.style.display = "";
-
-      if (myBarChart) {
+      
+      if (countAngenommen === 0 && countNotAngenommen === 0){
+        canvasElement.style.display = "none";
+        serviceRatingElement.style.display = "none";
+      } else if (myBarChart) {
         myBarChart.data.datasets[0].data = [countAngenommen, countNotAngenommen];
         myBarChart.update();
+
+        canvasElement.style.display = "";
+        serviceRatingElement.style.display = "";
       } else {
+        
+      canvasElement.style.display = "";
+      serviceRatingElement.style.display = "";
+
+
         myBarChart = new Chart(ctxBar, {
           type: 'bar',
           data: {
             labels: ["Angenommen", "Verpasst"],
             datasets: [{
               data: [countAngenommen, countNotAngenommen],
+              barPercentage: 0.6,
               backgroundColor: ['rgba(12, 194, 10, 0.8)', 'rgba(237, 14, 14, 0.8)'],
               borderColor: ['rgba(12, 194, 10, 0.8)', 'rgba(237, 14, 14, 0.8)'],
               borderWidth: 1
@@ -88,13 +103,25 @@ document.addEventListener('DOMContentLoaded', function(){
           },
           options: {
             scales: {
+              x: {
+                grid: {
+                  display: false
+                }
+              },
               y: {
-                beginAtZero: true
+                beginAtZero: true,
+                grid: {
+                  display: false
+                }
               }
             },
             plugins: {
               legend: {
                 display: false // Set display to false to hide the legend
+              },
+              title: {
+                  display:true,
+                  text: 'Einkommende Anrufe im ausgewählten Zeitfenster'
               }
             }
           }
@@ -102,6 +129,7 @@ document.addEventListener('DOMContentLoaded', function(){
       }
     }
     
+    // Piechart
     function updateUIPieChart(response) {
       let unanswered = 0;
       let aboveThirty = 0;
@@ -123,13 +151,18 @@ document.addEventListener('DOMContentLoaded', function(){
         } 
     });
 
+      // Get canvas element and set display later to show/hide element
       let canvasElement = document.getElementById("myPieChart");
-      canvasElement.style.display = "";
+      
 
-      if (myPieChart) {
+      if(unanswered === 0 && aboveThirty === 0 && belowThirty === 0 && belowTwenty === 0 && belowTen === 0){
+        canvasElement.style.display = "none";
+      } else if (myPieChart) {
         myPieChart.data.datasets[0].data = [unanswered, aboveThirty, belowThirty, belowTwenty, belowTen];
         myPieChart.update();
+        canvasElement.style.display = "";
       } else {
+        canvasElement.style.display = "";
         myPieChart = new Chart(ctxPie, {
           type: 'pie',
           data: {
@@ -141,8 +174,87 @@ document.addEventListener('DOMContentLoaded', function(){
               borderColor: ['rgba(237, 14, 14, 0.8)', 'rgba(248, 133, 3, 0.8)', 'rgba(220, 248, 3, 0.8)', 'rgba(123, 194, 10, 0.8)', 'rgba(12, 194, 10, 0.8)'],
               borderWidth: 1
             }]
+          },
+          options: {
+            plugins: {
+              title: {
+                display: true,
+                text: 'Reaktionszeit Telefonservice'
+              },
+              legend: {
+                position: 'right',
+                labels: {
+                  boxWidth: 20
+                }
+              }
+            }
           }
         });
+      }
+    }
+    // Chart outgoing calls
+    function updateOutgoingChart(response){
+      // Variables to compute logic
+      let countAngenommen = 0;
+      let countNotAngenommen = 0;
+      // Logic
+      response.data.forEach(function(item) {
+        if (item.CallDuration !== "00:00:00" && item.CommunicationType === "Ausgehend") {
+          countAngenommen++;
+         } else if (item.CallDuration === "00:00:00" && item.CommunicationType === "Ausgehend") {
+          countNotAngenommen++;
+         }
+        });
+      // Get canvas element and set display later to show/hide element
+      let canvasElement = document.getElementById("outgoingChart");
+      
+      // generate or update chart
+      if(countAngenommen === 0 && countNotAngenommen ===0 ){
+        canvasElement.style.display = "none";
+      } else if(outgoingChart) {
+        canvasElement.style.display = "";
+        outgoingChart.datasets[0].data = [countAngenommen, countNotAngenommen];
+        outgoingChart.update();
+        
+      } else {
+        canvasElement.style.display = "";
+        outgoingChart = new Chart(ctxOutgoing, {
+          type: 'bar',
+          data: {
+            labels: ["Angenommen", "Verpasst"],
+            datasets: [{
+              data: [countAngenommen, countNotAngenommen],
+              barPercentage: 0.6,
+              backgroundColor: ['rgba(12, 194, 10, 0.8)', 'rgba(237, 14, 14, 0.8)'],
+              borderColor: ['rgba(12, 194, 10, 0.8)', 'rgba(237, 14, 14, 0.8)'],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              x: {
+                grid: {
+                  display: false
+                }
+              },
+              y: {
+                beginAtZero: true,
+                grid: {
+                  display: false
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                display: false // Set display to false to hide the legend
+              },
+              title: {
+                  display:true,
+                  text: 'Ausgehende Anrufe im ausgewählten Zeitfenster'
+              }
+            }
+          }
+        })
       }
     }
   });
