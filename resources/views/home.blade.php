@@ -72,7 +72,7 @@
     </div>
     <div class="col col-12">
         <div class="row">
-            <div class="col col-6">
+            <div class="col col-5">
                 <div style="overflow: hidden">
                     <canvas id="myBarChart" style="display: none;"></canvas>
                 </div>
@@ -82,9 +82,16 @@
                     <canvas id="myPieChart" style="display: none;"></canvas>
                 </div>
             </div>
-            <div class="col col-3">
+            <div class="col col-3 d-flex align-items-center justify-content-center">
+                <div style="overflow: hidden" >
+                    <p id="serviceRating" style="display: none; font-weight: bold; font-size: larger;"></p>
+                </div>
+            </div>
+        </div>
+        <div class="row"> 
+            <div class="col col-5">
                 <div style="overflow: hidden">
-                    <p id="serviceRating" style="display: none;"></p>
+                    <canvas id="outgoingChart" style="display: none;"></canvas>
                 </div>
             </div>
         </div>
