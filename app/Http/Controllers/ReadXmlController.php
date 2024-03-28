@@ -27,12 +27,10 @@ class ReadXmlController extends Controller
                 // Check for conditions to set CallStatus and SubscriberName
                 if ($data['CommunicationType'] === 'FacilityRequest') {
                     // Calls with no DialledNumber, 00:00:00 CallDuration, 00:00:00 RingingDuration, and CommunicationType "FacilityRequest"
-                    $callStatus = '-';
-                    $subscriberName = empty($data['SubscriberName']) ? '-' : $data['SubscriberName'];
+                    continue;
                 } elseif ($data['CommunicationType'] === 'BreakIn') {
                     // Calls with 00:00:00 CallDuration, 00:00:00 RingingDuration, and CommunicationType "BreakIn"
-                    $callStatus = '-';
-                    $subscriberName = empty($data['SubscriberName']) ? '-' : $data['SubscriberName'];
+                    continue;
                 } elseif (in_array($data['CommunicationType'], ['OutgoingPrivate', 'OutgoingTransferTransit', 'OutgoingTransferPrivate', 'OutgoingTransit'])) {
                     // Calls with CommunicationType "OutgoingPrivate", "OutgoingTransferTransit", "OutgoingTransferPrivate", "OutgoingTransit"
                     $callStatus = '-';
@@ -75,8 +73,10 @@ class ReadXmlController extends Controller
     // funktion für die Filtrierung
     private function getCommunicationType($providedCommunicationType){
         if ($providedCommunicationType === 'OutgoingPrivate' ||
-            $providedCommunicationType === 'OutgoingTransferTransit' ||
-            $providedCommunicationType === 'OutgoingTransferPrivate' ||
+            $providedCommunicationType === 'OutgoingTransferPrivate'){
+            return 'AusgehendTS';
+        }
+        elseif ($providedCommunicationType === 'OutgoingTransferTransit' ||
             $providedCommunicationType === 'OutgoingTransit'){
             return 'Ausgehend';
         }
