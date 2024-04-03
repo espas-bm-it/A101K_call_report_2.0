@@ -1,5 +1,8 @@
+
 document.addEventListener('DOMContentLoaded', function() {
+  
     document.getElementById('reset-btn').addEventListener('click', function() {
+      
         console.log('Clicked on resetFilters');
 
         
@@ -32,9 +35,16 @@ document.addEventListener('DOMContentLoaded', function() {
         let canvasElementBar = document.getElementById("myBarChart");
         let canvasElementPie = document.getElementById("myPieChart");
         let canvasElementOutgoing = document.getElementById("outgoingChart");
+        let canvasElementOutgoingPie = document.getElementById("outgoingChartPie");
+        let canvasElementHistoryChart = document.getElementById("myTimeHistoryChart");
+
+
         canvasElementBar.style.display = "none";
         canvasElementPie.style.display = "none";
         canvasElementOutgoing.style.display = "none";
+        canvasElementOutgoingPie.style.display = "none";
+        canvasElementHistoryChart.style.display = "none";
+
         let serviceRatingElement = document.getElementById("serviceRating")
         serviceRatingElement.style.display = "none";
     });
@@ -45,6 +55,8 @@ document.addEventListener('DOMContentLoaded', function(){
   let myBarChart;
   let myPieChart;
   let outgoingChart;
+  let outgoingChartPie;
+  let timeHistoryChart;
 
   document.getElementById('graphicalDisplay').addEventListener('click', function(){
     // Initialize the charts once the button is clicked
@@ -52,6 +64,9 @@ document.addEventListener('DOMContentLoaded', function(){
     let ctxBar = document.getElementById('myBarChart').getContext('2d');    
     let ctxPie = document.getElementById('myPieChart').getContext('2d');
     let ctxOutgoing = document.getElementById('outgoingChart').getContext('2d');
+    let ctxOutgoingPie = document.getElementById('outgoingChartPie').getContext('2d');   
+    let ctxTimeHistoryChart = document.getElementById('myTimeHistoryChart').getContext('2d');
+
     let ajaxParams = dataTable.ajax.params();
     ajaxParams.length = -1;
 
@@ -65,6 +80,8 @@ document.addEventListener('DOMContentLoaded', function(){
         updateUIBarChart(response);
         updateUIPieChart(response);
         updateOutgoingChart(response);
+        updateOutgoingChartPie(response);
+        updateTimeHistoryChart(response);
       },
       error: function(xhr, status, error) {
         console.error('Error:', error);
@@ -80,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function(){
       return totalSeconds;
     }
 
+    // BarChart
     function updateUIBarChart(response) {
       let countAngenommen = 0;
       let countNotAngenommen = 0;
@@ -220,6 +238,61 @@ document.addEventListener('DOMContentLoaded', function(){
         });
       }
     }
+    // OutgoingPiechart
+    function updateOutgoingChartPie(response) {
+      let unanswered = 0;
+      let answered = 0;
+      
+
+      response.data.forEach(function(item) {
+        if (item.CommunicationType == "Ausgehend" && item.CallDuration == '00:00:00') {
+            unanswered++;
+        } else if ( item.CommunicationType == "Ausgehend" ) {
+            answered++;
+        } 
+    });
+
+      // Get canvas element and set display later to show/hide element
+      let canvasElement = document.getElementById("outgoingChartPie");
+      
+
+      if(unanswered === 0 && answered === 0){
+        canvasElement.style.display = "none";
+      } else if (outgoingChartPie) {
+        myPieChart.data.datasets[0].data = [unanswered, answered];
+        myPieChart.update();
+        canvasElement.style.display = "";
+      } else {
+        canvasElement.style.display = "";
+        outgoingChartPie = new Chart(ctxOutgoingPie, {
+          type: 'pie',
+          data: {
+            labels: ["nicht angenommen", "angenommen"],
+            datasets: [{
+              label: '# of Calls',
+              data: [unanswered, answered],
+              backgroundColor: ['rgba(237, 14, 14, 0.8)', 'rgba(12, 194, 10, 0.8)'],
+              borderColor: ['rgba(237, 14, 14, 0.8)', 'rgba(12, 194, 10, 0.8)'],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            plugins: {
+              title: {
+                display: true,
+                text: 'Reaktionszeit Client'
+              },
+              legend: {
+                position: 'right',
+                labels: {
+                  boxWidth: 20
+                }
+              }
+            }
+          }
+        });
+      }
+    }
     // Chart outgoing calls
     function updateOutgoingChart(response){
       // Variables to compute logic
@@ -243,7 +316,6 @@ document.addEventListener('DOMContentLoaded', function(){
         canvasElement.style.display = "";
         outgoingChart.datasets[0].data = [countAngenommen, countNotAngenommen];
         outgoingChart.update();
-        
       } else {
         canvasElement.style.display = "";
         outgoingChart = new Chart(ctxOutgoing, {
@@ -285,6 +357,117 @@ document.addEventListener('DOMContentLoaded', function(){
         })
       }
     }
+
+        // TimeHistoryChart
+function updateTimeHistoryChart(response) {
+  // Variables to compute logic
+  let countByTimeOfDay = {}; // Object to store counts for each time of day
+  let countByTimeOfDayAccepted = {}; // Object to store counts for each time of day where callStatus === accepted
+  let countByTimeOfDayNotAccepted = {}; // Object to store counts for each time of day where callStatus === notAccepted
+
+  // Initialize count objects
+  for (let i = 0; i < 24; i++) {
+    let hour = i;
+    countByTimeOfDay[hour] = 0;
+    countByTimeOfDayAccepted[hour] = 0;
+    countByTimeOfDayNotAccepted[hour] = 0;
+  }
+
+  // Logic
+  response.data.forEach(function(item) {
+      // Extract the hour from the timestamp and round to the nearest hour
+    let timeParts = item.Time.split(':');
+    let hour = parseInt(timeParts[0]);
+    
+    
+    // Format the time as HH:00
+    let timeOfDay = `${hour}`;
+
+
+    // Increment the count for the corresponding time of day
+    if (!countByTimeOfDay[timeOfDay]) {
+        countByTimeOfDay[timeOfDay] = 0;
+    }
+
+    countByTimeOfDay[timeOfDay]++;
+    if(item.CallStatus === 'Verpasst' ){
+      countByTimeOfDayNotAccepted[timeOfDay]++
+    } else if(item.CallStatus === 'Angenommen' ){
+      countByTimeOfDayAccepted[timeOfDay]++
+    }
+});
+
+  // Get canvas element and set display later to show/hide element
+  let canvasElement = document.getElementById("myTimeHistoryChart");
+
+  console.log(countByTimeOfDayNotAccepted);
+
+  // Universal label for all datasets
+  let labelsForAll = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']
+
+   
+  
+  // Prepare the chart data
+  const chartData = {
+    // Data for overall count of calls
+      labels: labelsForAll, // Time of day labels
+      datasets: [
+        {
+          label: 'Anzahl der Anrufe',
+          data: labelsForAll.map(timeOfDay => countByTimeOfDay[timeOfDay]), // Counts for each time of day
+          borderColor: 'rgba(75, 192, 192, 1)', // Line color
+          backgroundColor: 'rgba(75, 192, 192, 0.2)', // Fill color under the line
+          borderWidth: 1
+        },
+        {
+          label: 'Anzahl der verpassten Anrufe',
+          data: labelsForAll.map(timeOfDay => countByTimeOfDayNotAccepted[timeOfDay]),
+          borderColor: 'rgba(255, 99, 132, 1)', // Line color
+          backgroundColor: 'rgba(255, 99, 132, 0.2)', // Fill color under the line
+          borderWidth: 1
+        }
+    ]
+  };
+
+  if (timeHistoryChart) {
+      timeHistoryChart.data = chartData;
+      timeHistoryChart.update();
+      canvasElement.style.display = "";
+  } else {
+      canvasElement.style.display = "";
+      timeHistoryChart = new Chart(ctxTimeHistoryChart, {
+          type: 'line',
+          data: chartData,
+          options: {
+              scales: {
+                  x: {
+                      type: 'category', // Use category scale for x-axis
+                      labels: labelsForAll, // Time of day labels
+                      
+                      
+                      
+                  },
+                  y: {
+                      beginAtZero: true
+                  }
+              },
+              plugins: {
+                  legend: {
+                      display: true,
+                      position: 'right',
+                      labels: {
+                        boxWidth: 20
+                      }
+                  },
+                  title: {
+                      display: true,
+                      text: 'Anzahl der totalen und verpassten Anrufe nach Uhrzeit sortiert' // Chart title
+                  }
+              }
+          }
+      });
+  }
+}
   });
 });
     
