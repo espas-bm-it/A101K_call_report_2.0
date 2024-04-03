@@ -362,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function(){
 function updateTimeHistoryChart(response) {
   // Variables to compute logic
   let countByTimeOfDay = {}; // Object to store counts for each time of day
-  let countByTimeOfDayAccepted = {}; // Object to store counts for each time of day where callStatus === accepted
+  let countByTimeOfDayAccepted = {}; // Object to store counts for each time of day where callStatus === accepted currently not in use
   let countByTimeOfDayNotAccepted = {}; // Object to store counts for each time of day where callStatus === notAccepted
 
   // Initialize count objects
@@ -375,7 +375,7 @@ function updateTimeHistoryChart(response) {
 
   // Logic
   response.data.forEach(function(item) {
-      // Extract the hour from the timestamp and round to the nearest hour
+      // Extract the hour from the timestamp without rounding
     let timeParts = item.Time.split(':');
     let hour = parseInt(timeParts[0]);
     
