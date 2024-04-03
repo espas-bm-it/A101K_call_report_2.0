@@ -74,7 +74,7 @@ class ReadXmlController extends Controller
     private function getCommunicationType($providedCommunicationType){
         if ($providedCommunicationType === 'OutgoingPrivate' ||
             $providedCommunicationType === 'OutgoingTransferPrivate'){
-            return 'AusgehendTS';
+            return 'TSAusgehend';
         }
         elseif ($providedCommunicationType === 'OutgoingTransferTransit' ||
             $providedCommunicationType === 'OutgoingTransit'){
@@ -108,5 +108,4 @@ class ReadXmlController extends Controller
             return 'angenommen';
         }
     }
-
 }

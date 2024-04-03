@@ -94,6 +94,18 @@
                     <canvas id="outgoingChart" style="display: none;"></canvas>
                 </div>
             </div>
+            <div class="col col-3">
+                <div style="overflow: hidden">
+                    <canvas id="outgoingChartPie" style="display: none;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class ="row">
+            <div class="col col-9">
+                <div style="overflow: hidden">
+                    <canvas id="myTimeHistoryChart" style="display: none;"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
