@@ -48,6 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let serviceRatingElement = document.getElementById("serviceRating")
         serviceRatingElement.style.display = "none";
+        // ajax reload
+        table.ajax.reload();
     });
 });
 
@@ -183,73 +185,77 @@ document.addEventListener('DOMContentLoaded', function(){
       let belowThirty = 0;
       let belowTwenty = 0;
       let belowTen = 0;
-
+  
+      // Calculate data counts from the response
       response.data.forEach(function(item) {
-        if (item.CallStatus == "Verpasst") {
-            unanswered++;
-        } else if (stringToNumber(item.RingingDuration) > 30 && item.CallStatus == "Angenommen" ) {
-            aboveThirty++;
-        } else if (stringToNumber(item.RingingDuration) < 10 && item.CallStatus == "Angenommen" ) {
-            belowTen++;
-        } else if (stringToNumber(item.RingingDuration) < 20 && item.CallStatus == "Angenommen" ) {
-            belowTwenty++;
-        } else if (stringToNumber(item.RingingDuration) <= 30 && item.CallStatus == "Angenommen" ) {
-            belowThirty++;
-        } 
-    });
-
-      // Get canvas element and set display later to show/hide element
-      let canvasElement = document.getElementById("myPieChart");
-      
-
-      if(unanswered === 0 && aboveThirty === 0 && belowThirty === 0 && belowTwenty === 0 && belowTen === 0){
-        canvasElement.style.display = "none";
-      } else if (myPieChart) {
-        myPieChart.data.datasets[0].data = [unanswered, aboveThirty, belowThirty, belowTwenty, belowTen];
-        myPieChart.update();
-        canvasElement.style.display = "";
-      } else {
-        canvasElement.style.display = "";
-        myPieChart = new Chart(ctxPie, {
-          type: 'pie',
-          data: {
-            labels: ["nicht angenommen", ">30 sek.", "<30 sek.", "<20 sek.", "<10 sek."],
-            datasets: [{
-              label: '# of Calls',
-              data: [unanswered, aboveThirty, belowThirty, belowTwenty, belowTen],
-              backgroundColor: ['rgba(237, 14, 14, 0.8)', 'rgba(248, 133, 3, 0.8)', 'rgba(220, 248, 3, 0.8)', 'rgba(123, 194, 10, 0.8)', 'rgba(12, 194, 10, 0.8)'],
-              borderColor: ['rgba(237, 14, 14, 0.8)', 'rgba(248, 133, 3, 0.8)', 'rgba(220, 248, 3, 0.8)', 'rgba(123, 194, 10, 0.8)', 'rgba(12, 194, 10, 0.8)'],
-              borderWidth: 1
-            }]
-          },
-          options: {
-            plugins: {
-              title: {
-                display: true,
-                text: 'Reaktionszeit Telefonservice'
-              },
-              legend: {
-                position: 'right',
-                labels: {
-                  boxWidth: 20
-                }
-              }
-            }
+          if (item.CallStatus == "Verpasst") {
+              unanswered++;
+          } else if (stringToNumber(item.RingingDuration) > 30 && item.CallStatus == "Angenommen") {
+              aboveThirty++;
+          } else if (stringToNumber(item.RingingDuration) < 10 && item.CallStatus == "Angenommen") {
+              belowTen++;
+          } else if (stringToNumber(item.RingingDuration) < 20 && item.CallStatus == "Angenommen") {
+              belowTwenty++;
+          } else if (stringToNumber(item.RingingDuration) <= 30 && item.CallStatus == "Angenommen") {
+              belowThirty++;
           }
-        });
+      });
+  
+      // Get canvas element
+      let canvasElement = document.getElementById("myPieChart");
+  
+      if (unanswered === 0 && aboveThirty === 0 && belowThirty === 0 && belowTwenty === 0 && belowTen === 0) {
+          // Hide canvas if no data
+          canvasElement.style.display = "none";
+      } else if (myPieChart) {
+          // Update existing chart if it exists
+          myPieChart.data.datasets[0].data = [unanswered, aboveThirty, belowThirty, belowTwenty, belowTen];
+          myPieChart.update();
+          canvasElement.style.display = "";
+      } else {
+          // Create new chart if it doesn't exist
+          canvasElement.style.display = "";
+          let ctxPie = canvasElement.getContext('2d');
+          myPieChart = new Chart(ctxPie, {
+              type: 'pie',
+              data: {
+                  labels: ["nicht angenommen", ">30 sek.", "<30 sek.", "<20 sek.", "<10 sek."],
+                  datasets: [{
+                      label: '# of Calls',
+                      data: [unanswered, aboveThirty, belowThirty, belowTwenty, belowTen],
+                      backgroundColor: ['rgba(237, 14, 14, 0.8)', 'rgba(248, 133, 3, 0.8)', 'rgba(220, 248, 3, 0.8)', 'rgba(123, 194, 10, 0.8)', 'rgba(12, 194, 10, 0.8)'],
+                      borderColor: ['rgba(237, 14, 14, 0.8)', 'rgba(248, 133, 3, 0.8)', 'rgba(220, 248, 3, 0.8)', 'rgba(123, 194, 10, 0.8)', 'rgba(12, 194, 10, 0.8)'],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  plugins: {
+                      title: {
+                          display: true,
+                          text: 'Reaktionszeit Telefonservice'
+                      },
+                      legend: {
+                          position: 'right',
+                          labels: {
+                              boxWidth: 20
+                          }
+                      }
+                  }
+              }
+          });
       }
-    }
+  }
     // OutgoingPiechart
     function updateOutgoingChartPie(response) {
-      let unanswered = 0;
-      let answered = 0;
+      let unanswered1 = 0;
+      let answered1 = 0;
       
 
       response.data.forEach(function(item) {
-        if (item.CommunicationType == "Ausgehend" && item.CallDuration == '00:00:00') {
-            unanswered++;
-        } else if ( item.CommunicationType == "Ausgehend" ) {
-            answered++;
+        if ((item.CommunicationType == "PAusgehend" || item.CommunicationType == "TSAusgehend") && item.CallDuration == '00:00:00') {
+            unanswered1++;
+        } else if ((item.CommunicationType == "PAusgehend" || item.CommunicationType == "TSAusgehend")) {
+            answered1++;
         } 
     });
 
@@ -257,11 +263,11 @@ document.addEventListener('DOMContentLoaded', function(){
       let canvasElement = document.getElementById("outgoingChartPie");
       
 
-      if(unanswered === 0 && answered === 0){
+      if(unanswered1 === 0 && answered1 === 0){
         canvasElement.style.display = "none";
       } else if (outgoingChartPie) {
-        myPieChart.data.datasets[0].data = [unanswered, answered];
-        myPieChart.update();
+        outgoingChartPie.data.datasets[0].data = [unanswered1, answered1];
+        outgoingChartPie.update();
         canvasElement.style.display = "";
       } else {
         canvasElement.style.display = "";
@@ -271,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function(){
             labels: ["nicht angenommen", "angenommen"],
             datasets: [{
               label: '# of Calls',
-              data: [unanswered, answered],
+              data: [unanswered1, answered1],
               backgroundColor: ['rgba(237, 14, 14, 0.8)', 'rgba(12, 194, 10, 0.8)'],
               borderColor: ['rgba(237, 14, 14, 0.8)', 'rgba(12, 194, 10, 0.8)'],
               borderWidth: 1
@@ -301,9 +307,9 @@ document.addEventListener('DOMContentLoaded', function(){
       let countNotAngenommen = 0;
       // Logic
       response.data.forEach(function(item) {
-        if (item.CallDuration !== "00:00:00" && item.CommunicationType === "Ausgehend") {
+        if (item.CallDuration !== "00:00:00" && (item.CommunicationType == "PAusgehend" || item.CommunicationType == "TSAusgehend")) {
           countAngenommen++;
-         } else if (item.CallDuration === "00:00:00" && item.CommunicationType === "Ausgehend") {
+         } else if (item.CallDuration === "00:00:00" && (item.CommunicationType == "PAusgehend" || item.CommunicationType == "TSAusgehend")) {
           countNotAngenommen++;
          }
         });
@@ -315,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function(){
         canvasElement.style.display = "none";
       } else if(outgoingChart) {
         canvasElement.style.display = "";
-        outgoingChart.datasets[0].data = [countAngenommen, countNotAngenommen];
+        outgoingChart.data.datasets[0].data = [countAngenommen, countNotAngenommen];
         outgoingChart.update();
       } else {
         canvasElement.style.display = "";

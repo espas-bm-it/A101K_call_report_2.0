@@ -78,7 +78,7 @@ class ReadXmlController extends Controller
         }
         elseif ($providedCommunicationType === 'OutgoingTransferTransit' ||
             $providedCommunicationType === 'OutgoingTransit'){
-            return 'Ausgehend';
+            return 'PAusgehend';
         }
         elseif ($providedCommunicationType === 'IncomingPrivate' ||
             $providedCommunicationType ===  'IncomingTransit' ||
