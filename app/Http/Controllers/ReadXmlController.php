@@ -11,7 +11,15 @@ class ReadXmlController extends Controller
     // xml Datei auf phpmyadmin hochladen
     public function index(Request $req)
     {
-        $xmlDataString = file_get_contents(public_path('TicketCollector.xml'));
+        // Update the file path to the new location
+        $xmlFilePath = 'P:\\API Projekte\\A101K Telefonservice Report\\02 Projektdateien\\04 Archiv\\TicketCollector.xml';
+
+        // Check if the file exists at the specified path
+        if (!file_exists($xmlFilePath)) {
+            return response()->json(['message' => 'XML file not found at the specified path'], 400);
+        }
+
+        $xmlDataString = file_get_contents($xmlFilePath);
 
         $xmlObject = simplexml_load_string($xmlDataString);
 
@@ -23,7 +31,7 @@ class ReadXmlController extends Controller
                 // Variable für die Filtrierung festsetzen und auf Funktion verweisen
                 $communicationType = isset($data['CommunicationType']) ? $this->getCommunicationType($data['CommunicationType']) : 'unknown';
                 $callDuration = isset($data['CallDuration']) ? $this->getCallDuration($data['CallDuration'], $communicationType) : 'unknown';
-            
+
                 // Check for conditions to set CallStatus and SubscriberName
                 if ($data['CommunicationType'] === 'FacilityRequest') {
                     // Calls with no DialledNumber, 00:00:00 CallDuration, 00:00:00 RingingDuration, and CommunicationType "FacilityRequest"
@@ -48,7 +56,7 @@ class ReadXmlController extends Controller
                     $callStatus = $callDuration;
                     $subscriberName = isset($data['SubscriberName']) ? $data['SubscriberName'] : null;
                 }
-            
+
                 // Create a new record in the database for each $data item
                 XmlData::create([
                     "SubscriberName" => $subscriberName,
@@ -61,7 +69,6 @@ class ReadXmlController extends Controller
                     "CommunicationType" => $communicationType
                 ]);
             }
-            
 
             return response()->json(['message' => 'Data inserted successfully']);
         }
@@ -71,40 +78,41 @@ class ReadXmlController extends Controller
 
 
     // funktion für die Filtrierung
-    private function getCommunicationType($providedCommunicationType){
-        if ($providedCommunicationType === 'OutgoingPrivate' ||
-            $providedCommunicationType === 'OutgoingTransferPrivate'){
+    private function getCommunicationType($providedCommunicationType)
+    {
+        if (
+            $providedCommunicationType === 'OutgoingPrivate' ||
+            $providedCommunicationType === 'OutgoingTransferPrivate'
+        ) {
             return 'TSAusgehend';
-        }
-        elseif ($providedCommunicationType === 'OutgoingTransferTransit' ||
-            $providedCommunicationType === 'OutgoingTransit'){
+        } elseif (
+            $providedCommunicationType === 'OutgoingTransferTransit' ||
+            $providedCommunicationType === 'OutgoingTransit'
+        ) {
             return 'PAusgehend';
-        }
-        elseif ($providedCommunicationType === 'IncomingPrivate' ||
+        } elseif (
+            $providedCommunicationType === 'IncomingPrivate' ||
             $providedCommunicationType ===  'IncomingTransit' ||
             $providedCommunicationType ===  'IncomingTransferPrivate' ||
-            $providedCommunicationType ===  'IncomingTransferTransit'){
+            $providedCommunicationType ===  'IncomingTransferTransit'
+        ) {
             return 'Eingehend';
-        }
-        elseif($providedCommunicationType === 'BreakIn'){
+        } elseif ($providedCommunicationType === 'BreakIn') {
             return 'BreakIn';
-        }
-        elseif($providedCommunicationType === 'FacilityRequest') {
+        } elseif ($providedCommunicationType === 'FacilityRequest') {
             return 'FacilityRequest';
-        }
-        else{
+        } else {
             return 'Unbekannt';
         }
     }
 
-    private function getCallDuration($providedCallDuration, $communicationType){
+    private function getCallDuration($providedCallDuration, $communicationType)
+    {
         if ($providedCallDuration === '00:00:00' && $communicationType === 'Eingehend') {
             return 'Angenommen';
-        }
-        elseif ($providedCallDuration === '00:00:00'){
+        } elseif ($providedCallDuration === '00:00:00') {
             return 'verpasst';
-        }
-        else{
+        } else {
             return 'angenommen';
         }
     }
