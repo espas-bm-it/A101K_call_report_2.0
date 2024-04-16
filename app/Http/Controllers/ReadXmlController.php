@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\XmlData;
+use App\Models\Config;
+
 
 
 class ReadXmlController extends Controller
@@ -11,8 +13,14 @@ class ReadXmlController extends Controller
     // xml Datei auf phpmyadmin hochladen
     public function index(Request $req)
     {
-        // Update the file path to the new location
-        $xmlFilePath = 'P:\\API Projekte\\A101K Telefonservice Report\\02 Projektdateien\\04 Archiv\\TicketCollector.xml';
+        // Retrieve the XML file path from the configs table
+        $config = Config::find(1); // Assuming there's only one configuration record, adjust as needed
+
+        if (!$config) {
+            return response()->json(['message' => 'Configuration not found'], 400);
+        }
+
+        $xmlFilePath = $config->path;
 
         // Check if the file exists at the specified path
         if (!file_exists($xmlFilePath)) {
