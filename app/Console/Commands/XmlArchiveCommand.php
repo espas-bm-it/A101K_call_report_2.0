@@ -20,6 +20,9 @@ class XmlArchiveCommand extends Command
             $xmlFilePath = $config->path;
             $archivePath = 'T:\_TelefonService_Archive';
 
+            // Output the XML file path for debugging
+            $this->info('XML file path: ' . $xmlFilePath);
+
             // Check if the XML file exists at the specified path
             if (file_exists($xmlFilePath)) {
                 // Generate a unique archive name based on the current date and time
