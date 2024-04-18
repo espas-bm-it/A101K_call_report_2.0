@@ -13,6 +13,7 @@ class Config extends Model
 
     public static function getConfigData()
     {
-        return self::select('id', 'path')->first();
+        return self::first(); // Retrieve the first configuration record
+        //return self::select('id', 'path')->first();
     }
 }
