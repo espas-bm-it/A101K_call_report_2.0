@@ -22,7 +22,6 @@ class XmlArchiveCommand extends Command
         }
 
         $xmlFilePath = $config->path;
-        $archiveDirectory = 'T:\_TelefonService_Archive';
 
         // Output the XML file path for debugging
         $this->info('XML file path: ' . $xmlFilePath);
@@ -34,19 +33,14 @@ class XmlArchiveCommand extends Command
         }
 
         try {
-            // Ensure the archive directory exists
-            if (!Storage::exists($archiveDirectory)) {
-                Storage::makeDirectory($archiveDirectory);
-            }
-
             // Generate a unique archive name based on the current date and time
             $archiveName = 'TicketCollector_' . now()->format('Ymd_His') . '.xml';
 
-            // Copy the XML file to the archive path with the generated archive name
-            Storage::copy($xmlFilePath, $archiveDirectory . DIRECTORY_SEPARATOR . $archiveName);
+            // Store the XML file in the telefon_service_archive disk
+            Storage::disk('telefon_service_archive')->put($archiveName, file_get_contents($xmlFilePath));
 
             // Output a success message
-            $this->info('TicketCollector.xml archived successfully.');
+            $this->info("TicketCollector.xml archived successfully as '$archiveName'");
         } catch (\Exception $e) {
             // Handle any exceptions or errors
             $this->error('Failed to archive TicketCollector.xml: ' . $e->getMessage());
