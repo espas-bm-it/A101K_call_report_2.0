@@ -9,7 +9,9 @@ class Kernel extends ConsoleKernel
 {
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('app:xml-archive-command')->daily();
+        $schedule->command('archive:xml')->daily();
+        
+        $schedule->command('read-xml')->daily();
     }
 
     protected function commands()
