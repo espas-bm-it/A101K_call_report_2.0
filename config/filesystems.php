@@ -36,10 +36,6 @@ return [
             'throw' => false,
         ],
 
-        'telefon_service_archive' => [
-            'driver' => 'local',
-            'root' => 'T:/_TelefonService_Archive', // Adjust the root path as needed
-        ],
 
         'public' => [
             'driver' => 'local',

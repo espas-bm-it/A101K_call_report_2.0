@@ -12,24 +12,23 @@ class ConfigSeeder extends Seeder
      */
     public function run()
     {
-        // Retrieve the Config record where id = 1
-        $config = Config::find(1);
+        // Check if any Config records exist
+        $existingConfigsCount = Config::count();
 
-        if (!$config) {
-            // Handle the case where the record with id = 1 is not found
-            $this->command->error('Config record with id = 1 not found.');
-            return;
+        if ($existingConfigsCount === 0) {
+            // Insert default Ticket Collector Path (ID 1)
+            $ticketCollectorPath = 'P:\API Projekte\A101K Telefonservice Report\02 Projektdateien\04 Archiv\TicketCollector.xml';
+            Config::create(['path' => $ticketCollectorPath]);
+
+            $this->command->info('Ticket Collector Path inserted into configs table: ' . $ticketCollectorPath);
+
+            // Insert default Archive Path (ID 2)
+            $archivePath = 'T:/_TelefonService_Archive';
+            Config::create(['path' => $archivePath]);
+
+            $this->command->info('Archive Path inserted into configs table: ' . $archivePath);
+        } else {
+            $this->command->info('Config records already exist. Skipping seeding.');
         }
-
-        // Get the path from the retrieved Config record
-        $ticketCollectorPath = $config->path;
-
-        // Insert a record into the configs table with the path
-        Config::create([
-            'path' => $ticketCollectorPath
-        ]);
-
-
-        $this->command->info('Path inserted into configs table: ' . $ticketCollectorPath);
     }
 }

@@ -13,18 +13,21 @@ class XmlArchiveCommand extends Command
 
     public function handle()
     {
-        // Retrieve configuration data (specifically the XML file path)
-        $config = Config::first();
+        // Retrieve configuration data (specifically the XML file path and archive path)
+        $ticketCollectorConfig = Config::find(1);
+        $archiveConfig = Config::find(2);
 
-        if (!$config) {
+        if (!$ticketCollectorConfig || !$archiveConfig) {
             $this->error('Configuration data not found. Make sure the config table is populated.');
             return;
         }
 
-        $xmlFilePath = $config->path;
+        $xmlFilePath = $ticketCollectorConfig->path;
+        $archivePath = $archiveConfig->path;
 
         // Output the XML file path for debugging
         $this->info('XML file path: ' . $xmlFilePath);
+        $this->info('Archive path: ' . $archivePath);
 
         // Check if the XML file exists at the specified path
         if (!file_exists($xmlFilePath)) {
@@ -33,11 +36,17 @@ class XmlArchiveCommand extends Command
         }
 
         try {
+            // Ensure the archive directory exists
+            if (!Storage::exists($archivePath)) {
+                Storage::makeDirectory($archivePath);
+            }
+
             // Generate a unique archive name based on the current date and time
             $archiveName = 'TicketCollector_' . now()->format('Ymd_His') . '.xml';
 
-            // Store the XML file in the telefon_service_archive disk
-            Storage::disk('telefon_service_archive')->put($archiveName, file_get_contents($xmlFilePath));
+            // Store the XML file in the dynamically fetched archive path
+            Storage::put($archivePath . '/' . $archiveName, file_get_contents($xmlFilePath));
+
 
             // Output a success message
             $this->info("TicketCollector.xml archived successfully as '$archiveName'");
