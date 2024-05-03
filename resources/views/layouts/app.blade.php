@@ -47,9 +47,6 @@
 
     <script src="{{url('js/app.js')}}" defer></script>
     
-
-    <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 
 <body>
