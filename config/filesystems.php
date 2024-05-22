@@ -57,6 +57,12 @@ return [
             'throw' => false,
         ],
 
+        'dynamic_archive' => [
+            'driver' => 'local',
+            'root' => env('DYNAMIC_ARCHIVE_ROOT', storage_path('app/dynamic_archive')),
+            'throw' => false,
+        ],
+
     ],
 
     /*
