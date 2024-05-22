@@ -36,16 +36,19 @@ class XmlArchiveCommand extends Command
         }
 
         try {
+            // Dynamically set the root for the 'dynamic_archive' disk
+            config(['filesystems.disks.dynamic_archive.root' => $archivePath]);
+
             // Ensure the archive directory exists
-            if (!Storage::exists($archivePath)) {
-                Storage::makeDirectory($archivePath);
+            if (!Storage::disk('dynamic_archive')->exists('')) {
+                Storage::disk('dynamic_archive')->makeDirectory('');
             }
 
             // Generate a unique archive name based on the current date and time
             $archiveName = 'TicketCollector_' . now()->format('Ymd_His') . '.xml';
 
             // Store the XML file in the dynamically fetched archive path
-            Storage::put($archivePath . '/' . $archiveName, file_get_contents($xmlFilePath));
+            Storage::disk('dynamic_archive')->put($archiveName, file_get_contents($xmlFilePath));
 
 
             // Output a success message
