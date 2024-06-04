@@ -11,7 +11,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('archive:xml')->daily();
         
-        $schedule->command('curl http://172.20.3.43:8000/read-xml')->daily();
+        $schedule->exec('curl http://172.20.3.43:8000/read-xml')->daily();
     }
 
     protected function commands()
