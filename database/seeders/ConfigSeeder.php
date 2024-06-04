@@ -17,13 +17,13 @@ class ConfigSeeder extends Seeder
 
         if ($existingConfigsCount === 0) {
             // Insert default Ticket Collector Path (ID 1)
-            $ticketCollectorPath = 'P:\API Projekte\A101K Telefonservice Report\02 Projektdateien\04 Archiv\TicketCollector.xml';
+            $ticketCollectorPath = '\\zh-hq-sv023\logs\TicketCollector.xml';
             Config::create(['path' => $ticketCollectorPath]);
 
             $this->command->info('Ticket Collector Path inserted into configs table: ' . $ticketCollectorPath);
 
             // Insert default Archive Path (ID 2)
-            $archivePath = 'T:/_TelefonService_Archive';
+            $archivePath = '\\zh-hq-sv023\archiv';
             Config::create(['path' => $archivePath]);
 
             $this->command->info('Archive Path inserted into configs table: ' . $archivePath);
