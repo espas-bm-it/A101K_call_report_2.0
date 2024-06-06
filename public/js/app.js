@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function(){
             datasets: [{
               data: [countAngenommen, countNotAngenommen],
               barPercentage: 0.6,
-              backgroundColor: ['rgba(12, 194, 10, 0.8)', 'rgba(237, 14, 14, 0.8)'],
+              backgroundColor: ['rgba(147, 197, 75, 0.8)', 'rgba(217, 83, 79, 0.8)'],
               borderColor: ['rgba(12, 194, 10, 0.8)', 'rgba(237, 14, 14, 0.8)'],
               borderWidth: 1
             }]
@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function(){
                           text: 'Reaktionszeit Telefonservice'
                       },
                       legend: {
-                          position: 'right',
+                          position: 'bottom',
                           labels: {
                               boxWidth: 20
                           }

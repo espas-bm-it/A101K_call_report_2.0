@@ -1,0 +1,45 @@
+/* Custom Styles ESPAS Design */
+body {
+    font-family: 'Frutiger', sans-serif;
+    font-weight: normal;
+  }
+.navbar {
+    background-color: #e66446;
+}
+/* ESPAS Balken */
+#es-balken-2, #es-balken-3, #es-balken-4, #es-balken-5 {
+    height: 15px;
+}
+#es-balken-2, #es-balken-3, #es-balken-4 {
+    transform: skew(-7deg) translate(10px,0);
+}
+#es-balken-1, #es-balken-2 {
+    background-color: rgb(140, 170, 220);
+}
+#es-balken-3 {
+    background-color: rgb(135, 200, 90);
+}
+#es-balken-4, #es-balken-5 {
+    background-color: rgb(230, 190, 110);
+}
+#es-balken-4, #es-balken-5 {
+    background-color: rgb(230, 190, 110);
+}
+.container .es-light {
+    padding-bottom: 1rem;
+}
+/* Daterange Table */
+#daterange_table_length select {
+    font-weight: 500;
+    line-height: 22px;
+    border-radius: 4px;
+    padding: 10px 10px;
+    width: 70px;
+}
+#daterange_table_length {
+    margin-bottom: 15px;
+}
+/* Abstände zwischen den Buttuns zum selektieren */
+.btn-group {
+    margin: 5px;
+}
