@@ -10,13 +10,13 @@
           <!-- SELECT COMMUNICATION TYPE -->
           <button type="button" id="selectCommunicationType-container" class="btn m-2 p-0"></button>
           <!-- RESET BUTTON -->
-          <button type="button" class="float-end btn btn-outline-warning link-primary rounded-2 m-2 p-0">Zurücksetzen</button>
+          <button type="button" id="reset-btn" class="float-end btn btn-outline-warning link-primary rounded-2 m-2 p-0">Zurücksetzen</button>
         </div>
         <div class="row">
           <div class="col col-12">
             <div class="text-center">
-              <div id="graphicalDisplay" class="btn btn-info" style="margin-top: 5px;">
-                <i class="fa-solid fa-chart-simple"></i> grafische Darstellung
+              <div id="graphicalDisplay" class="btn btn-info mt-3">
+                <i class="fa-solid fa-chart-simple"></i> Grafische Darstellung
               </div>
             </div>
           </div>
