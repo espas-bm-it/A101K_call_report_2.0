@@ -212,12 +212,23 @@ class XmlDataDataTable extends DataTable
                 // Initialize the Date Range Picker here
                 var dateRangeInput = $("#daterange");
                 var dataTable = $("#daterange_table").DataTable(); // Select the DataTable by its ID
+
+                
             
                 // Set the default message
                 dateRangeInput.html("Datumsbereich");
             
                 dateRangeInput.daterangepicker({
                     opens: "left",
+                    ranges: {
+                        "Heute": [moment(), moment()],
+                        "Gestern": [moment().subtract(1, "days"), moment().subtract(1, "days")],
+                        "Letzten 7 Tage": [moment().subtract(6, "days"), moment()],
+                        "Diesen Monat": [moment().startOf("month"), moment().endOf("month")],
+                        "Letzten Monat": [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")],
+                        "Letzten 365 Tage": [moment().subtract(365, "days"), moment()]
+                    },
+                    alwaysShowCalendars: true,
                     locale: {
                         format: "DD-MM-YYYY"
                     }
@@ -231,7 +242,11 @@ class XmlDataDataTable extends DataTable
             
                     // Update the DataTable with the selected date range
                     dataTable.column(2).search(startDate + "|" + endDate, true, false).draw(); // Search and draw for the date range
-                });
+
+                    console.log(startDate)
+                    console.log(endDate)
+                }
+                );
             }',
             ])
             ->buttons([
