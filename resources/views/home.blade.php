@@ -52,7 +52,7 @@
                     <!--        Div for the graphics button     -->
                     <div id="graphicalDisplay" class="float-end"
                     style="background: #ffff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; border-radius: 5px; width: 100%; text-align:center; margin: 5px;">
-                        graphishe Darstellung
+                        Graphische Darstellung
                     </div>
                 </div>
 

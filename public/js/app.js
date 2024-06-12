@@ -1,7 +1,31 @@
-      // test bitte ignorieren
+   
       
 document.addEventListener('DOMContentLoaded', function() {
+
   
+  var dateRangeInput = $("#daterange");
+
+  // Get date for initialization value of daterangepicker
+  var today = new Date();
+  var formattedToday = moment(today).format('DD-MM-YYYY');
+
+  // Initialize daterangepicker with correct start and end dates
+  dateRangeInput.on('show.daterangepicker', function(ev, picker){
+    dateRangeInput.data('daterangepicker').setStartDate(formattedToday);
+    dateRangeInput.data('daterangepicker').setEndDate(formattedToday);
+  })
+
+  // Apply correct dates to the daterangepicker
+  dateRangeInput.on('apply.daterangepicker', function(ev, picker){
+    let dataTable = $('#daterange_table').DataTable();
+
+    
+    let startDate = dateRangeInput.data('daterangepicker').startDate.format("DD-MM-YYYY");
+    let endDate = dateRangeInput.data('daterangepicker').endDate.format("DD-MM-YYYY");
+    dataTable.column(2).search(startDate + "|" + endDate, true, false).draw();
+
+  }) 
+
     document.getElementById('reset-btn').addEventListener('click', function() {
       
         console.log('Clicked on resetFilters');
