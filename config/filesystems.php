@@ -36,6 +36,7 @@ return [
             'throw' => false,
         ],
 
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
@@ -53,6 +54,12 @@ return [
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => false,
+        ],
+
+        'dynamic_archive' => [
+            'driver' => 'local',
+            'root' => env('DYNAMIC_ARCHIVE_ROOT', storage_path('app/dynamic_archive')),
             'throw' => false,
         ],
 
