@@ -1,4 +1,0 @@
-- ## Documentation Projekt A101
-    - [Overview](/{{route}}/{{version}}/overview)
-    - [Datatable](/{{route}}/{{version}}/datatable)
-    - [Charts](/{{route}}/{{version}}/charts)

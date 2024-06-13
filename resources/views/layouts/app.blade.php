@@ -27,7 +27,6 @@
     <!-- DataTables Language File CDN -->
     <script src="//cdn.datatables.net/plug-ins/1.10.24/i18n/German.json"></script>
     <script src="{{url('js/app.js')}}" defer></script>
-
     <!-- Font awesome -->
     <script src="https://kit.fontawesome.com/bb2d335bd6.js" crossorigin="anonymous"></script>
     <!-- Scripts --> @vite(['resources/sass/app.scss', 'resources/js/app.js'])
@@ -37,14 +36,6 @@
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet" type="text/css">
   </head>
   <body>
-
-    
-    <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-</head>
-
-<body>
-
     <div id="app">
       <nav class="navbar navbar-expand-md navbar-light shadow-sm">
         <div class="container">
