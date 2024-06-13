@@ -1,0 +1,51 @@
+:root {
+    --bs-primary: #e66446; /* ESPAS rot */
+    --bs-success: #87c85a; /* ESPAS grün */
+ 
+}
+/* Custom Styles ESPAS Design */
+
+.navbar {
+    background-color: var(--bs-primary)
+}
+/* ESPAS Balken */
+#es-balken-2, #es-balken-3, #es-balken-4, #es-balken-5 {
+    height: 15px;
+}
+#es-balken-2, #es-balken-3, #es-balken-4 {
+    transform: skew(-7deg) translate(10px,0);
+}
+#es-balken-1, #es-balken-2 {
+    background-color: rgb(140, 170, 220);
+}
+#es-balken-3 {
+    background-color: rgb(135, 200, 90);
+}
+#es-balken-4, #es-balken-5 {
+    background-color: rgb(230, 190, 110);
+}
+#es-balken-4, #es-balken-5 {
+    background-color: rgb(230, 190, 110);
+}
+.container .es-light {
+    padding-bottom: 1rem;
+}
+/* Daterange Table */
+#daterange_table_length select {
+    font-weight: 500;
+    line-height: 22px;
+    border-radius: 4px;
+    padding: 10px 10px;
+    width: 70px;
+}
+#daterange_table_length {
+    margin-bottom: 15px;
+}
+/* Daterangepicker */
+.daterangepicker td.active, .daterangepicker td.active:hover {
+  background-color: var(--bs-primary) !important;
+}
+/* Abstände zwischen den Buttuns zum selektieren */
+.btn-group {
+    margin: 5px;
+}

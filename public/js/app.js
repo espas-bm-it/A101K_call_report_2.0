@@ -169,8 +169,8 @@ document.addEventListener('DOMContentLoaded', function(){
             datasets: [{
               data: [countAngenommen, countNotAngenommen],
               barPercentage: 0.6,
-              backgroundColor: ['rgba(12, 194, 10, 0.8)', 'rgba(237, 14, 14, 0.8)'],
-              borderColor: ['rgba(12, 194, 10, 0.8)', 'rgba(237, 14, 14, 0.8)'],
+              backgroundColor: ['rgb(135, 200, 90, 0.8)', 'rgb(230, 100, 70, 0.8)'],
+              borderColor: ['rgb(135, 200, 90, 0.4)', 'rgb(230, 100, 70, 0.4)'],
               borderWidth: 1
             }]
           },
@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function(){
                           text: 'Reaktionszeit Telefonservice'
                       },
                       legend: {
-                          position: 'right',
+                          position: 'bottom',
                           labels: {
                               boxWidth: 20
                           }
@@ -356,8 +356,8 @@ document.addEventListener('DOMContentLoaded', function(){
             datasets: [{
               data: [countAngenommen, countNotAngenommen],
               barPercentage: 0.6,
-              backgroundColor: ['rgba(12, 194, 10, 0.8)', 'rgba(237, 14, 14, 0.8)'],
-              borderColor: ['rgba(12, 194, 10, 0.8)', 'rgba(237, 14, 14, 0.8)'],
+              backgroundColor: ['rgba(12, 194, 10, 0.8)', 'rgb(230, 100, 70, 0.8)'],
+              borderColor: ['rgba(12, 194, 10, 0.8)', 'rgb(230, 100, 70, 0.4)'],
               borderWidth: 1
             }]
           },
@@ -434,7 +434,7 @@ function updateTimeHistoryChart(response) {
   console.log(countByTimeOfDayNotAccepted);
 
   // Universal label for all datasets
-  let labelsForAll = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']
+  let labelsForAll = ['8', '9', '10', '11', '12', '13', '14', '15', '16', '17']
 
    
   
@@ -485,7 +485,7 @@ function updateTimeHistoryChart(response) {
               plugins: {
                   legend: {
                       display: true,
-                      position: 'right',
+                      position: 'bottom',
                       labels: {
                         boxWidth: 20
                       }

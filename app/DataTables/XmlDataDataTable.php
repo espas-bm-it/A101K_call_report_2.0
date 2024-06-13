@@ -172,14 +172,14 @@ class XmlDataDataTable extends DataTable
             
 
                 // Update select filters for column 0 (SubscriberName)
-                $("#selectCustomer-container").html(\'<select id="selectColumn0" class="form-select" >' . $subscriberNameOptions . '</select>\');
+                $("#selectCustomer-container").html(\'<select id="selectColumn0" class="form-select btn btn-outline-primary">' . $subscriberNameOptions . '</select>\');
                 $("#selectCustomer-container select").on("change", function() {
                     var selectedValue = $(this).val();
                     api.column(0).search(selectedValue).draw();
                 });
 
                 // Update select filters for column 6 (CallStatus)
-                $("#selectStatus-container").html(\'<select id="selectColumn6" class="form-select" >' . $callStatusOptions . '</select>\');
+                $("#selectStatus-container").html(\'<select id="selectColumn6" class="form-select btn btn-outline-primary">' . $callStatusOptions . '</select>\');
                 $("#selectStatus-container select").on("change", function() {
                     var selectedValue = $(this).val();
                     api.column(6).search(selectedValue).draw();
@@ -193,7 +193,7 @@ class XmlDataDataTable extends DataTable
                     communicationTypeOptions += \'<option value="\' + value + \'">\' + value + \'</option>\';
                 });
             
-                $("#selectCommunicationType-container").html(\'<select id="selectColumn7" class="form-select" >\' + communicationTypeOptions + \'</select>\');
+                $("#selectCommunicationType-container").html(\'<select id="selectColumn7" class="form-select btn btn-outline-primary" >\' + communicationTypeOptions + \'</select>\');
                 $("#selectCommunicationType-container select").on("change", function() {
                     var selectedValue = $(this).val();
                     api.column(7).search(selectedValue).draw();
