@@ -1,10 +1,12 @@
+:root {
+    --bs-primary: #e66446; /* ESPAS rot */
+    --bs-success: #87c85a; /* ESPAS grün */
+ 
+}
 /* Custom Styles ESPAS Design */
-body {
-    font-family: 'Frutiger', sans-serif;
-    font-weight: normal;
-  }
+
 .navbar {
-    background-color: #e66446;
+    background-color: var(--bs-primary)
 }
 /* ESPAS Balken */
 #es-balken-2, #es-balken-3, #es-balken-4, #es-balken-5 {
@@ -38,6 +40,10 @@ body {
 }
 #daterange_table_length {
     margin-bottom: 15px;
+}
+/* Daterangepicker */
+.daterangepicker td.active, .daterangepicker td.active:hover {
+  background-color: var(--bs-primary) !important;
 }
 /* Abstände zwischen den Buttuns zum selektieren */
 .btn-group {
