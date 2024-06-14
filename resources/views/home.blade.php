@@ -4,13 +4,13 @@
     <div class="col col-12">
       <div class="row">
         <div class="btn-group mt-3" role="group" aria-label="Basic example">
-          <!--DATE RANGE FILTER -->
+          <!--DATE RANGE FILTER  -->
           <button type="button" id="daterange" class="btn btn-outline-primary rounded-2 m-2 p-0"></button>
           <!--SELECT CUSTOMER -->
           <button type="button" id="selectCustomer-container" class="btn m-2 p-0"></button>
           <!-- SELECT COMMUNICATION TYPE -->
           <button type="button" id="selectCommunicationType-container" class="btn m-2 p-0"></button>
-          <!-- RESET BUTTON -->
+          <!-- RESET BUTTON  -->
           <button type="button" id="reset-btn" class="float-end btn btn-outline-warning link-primary rounded-2 m-2 p-0">Zurücksetzen</button>
         </div>
       </div>
